@@ -4,10 +4,10 @@ using UnityEngine.Tilemaps;
 public class AutoMaping : MonoBehaviour
 {
     [SerializeField] Tilemap m_tilemap;
-    /// <summary>部屋のxの長さ</summary>
-    [SerializeField] int m_roomX = 5;
-    /// <summary>部屋のyの長さ</summary>
-    [SerializeField] int m_roomY = 5;
+    /// <summary>部屋のxの長さ</summary>(偶数をいれる)
+    [SerializeField]int m_roomX = 4;
+    /// <summary>部屋のyの長さ</summary>(偶数をいれる)
+    [SerializeField]int m_roomY = 4;
     /// <summary>壁のタイル</summary>
     Tile[] m_wallTile;
     /// <summary>道のタイル</summary>
@@ -45,14 +45,13 @@ public class AutoMaping : MonoBehaviour
                 tile[i] = roadTile;
             }
         }
-
         int putIndex = 0;
         //配列からtileを置く(xの横並びで考える)
         for (int y = 0; y < roomY; y++)
         {
             for (int x = 0; x < roomX; x++)
             {
-                position = new Vector3Int(x, y, 0);
+                position = new Vector3Int(x - roomX / 2, y - roomY/2, 0);
                 m_tilemap.SetTile(position, tile[putIndex]);
                 putIndex++;
             }
