@@ -161,10 +161,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 61320734}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09b35e50e03588b44a388dd660460e04, type: 3}
+  m_Script: {fileID: 11500000, guid: 678f04dada084ef40a9a3db61386a5ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_tilemap: {fileID: 1692044350}
+  m_mapX: 100
+  m_mapY: 100
+  m_roomX: 4
+  m_roomY: 4
+  m_vector3Int: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
