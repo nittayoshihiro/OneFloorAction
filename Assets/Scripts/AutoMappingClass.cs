@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class AutoMappingClass : MonoBehaviour
@@ -97,6 +95,65 @@ public class AutoMappingClass : MonoBehaviour
             }
             position.x -= roomSizeX;
             position.y++;
+        }
+
+    }
+    public void MappingButtun()
+    {
+        m_tilemap.ClearAllTiles();
+        PositionMapping(m_wallTile[0], m_roadTile[0], m_vector3Int, m_mapX, m_mapY);
+    }
+    void PositionMapping(Tile wallTile, Tile roadTile, Vector3Int mapPosition, int mapX, int mapY)
+    {
+        System.Random random = new System.Random();
+        //部屋のXY
+        int roomX = mapX, roomY = mapY;
+        for (int i = 0; i < 3; i++)
+        {
+            //ランダムにX座標を決める
+            int randPosX = random.Next(mapPosition.x + 5, mapX - 5);
+            if (randPosX < mapX / 2)
+            {
+                //半分より小さいとき
+                roomX = randPosX;
+                RoomMapping(wallTile, roadTile, mapPosition, roomX, roomY);
+                mapX -= roomX;
+                mapPosition.x += randPosX;
+                roomX = mapX;
+            }
+            else
+            {
+                //半分より大きいとき
+                roomX = mapX - randPosX;
+                mapPosition.x += randPosX;
+                RoomMapping(wallTile, roadTile, mapPosition, roomX, roomY);
+                mapX -= roomX;
+                mapPosition.x -= randPosX;
+                roomX = mapX;
+            }
+            //ランダムにY座標を決める
+            int randPosY = random.Next(mapPosition.y + 5, mapY - 5);
+            if (randPosY < mapY / 2)
+            {
+                //半分より小さいとき
+                roomY = randPosY;
+                RoomMapping(wallTile, roadTile, mapPosition, roomX, roomY);
+                mapY -= roomY;
+                mapPosition.y += randPosY;
+
+            }
+            else
+            {
+                //半分より大きいとき
+                roomY = mapY - randPosY;
+                mapPosition.y += randPosY;
+                RoomMapping(wallTile, roadTile, mapPosition, roomX, roomY);
+                mapY -= roomY;
+                mapPosition.y -= randPosY;
+            }
+
+
+
         }
     }
 }
