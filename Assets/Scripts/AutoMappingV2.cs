@@ -3,6 +3,8 @@ using UnityEngine.Tilemaps;
 public class AutoMappingV2 : MonoBehaviour
 {
     [SerializeField] Tilemap m_tilemap;
+    [SerializeField] int m_mapSizeX = 30;
+    [SerializeField] int m_mapSizeY = 20;
     [SerializeField] Vector3Int m_vector3Int = new Vector3Int(0, 0, 0);
     /// <summary>壁のタイル</summary>
     Tile[] m_wallTile;
@@ -22,13 +24,15 @@ public class AutoMappingV2 : MonoBehaviour
 
     }
 
-    public void AutoMapping()
+    public void AutoMappingButton()
     {
-        m_vector3Int = new Vector3Int(0, 0, 0);
+        AutoMapping(m_mapSizeX, m_mapSizeY);
+    }
+    void AutoMapping(int mapSizeX, int mapSizeY)
+    {
         m_tilemap.ClearAllTiles();
+        m_vector3Int = new Vector3Int(0, 0, 0);
 
-        int mapSizeX = 30;
-        int mapSizeY = 20;
         //マップのステータスを配列で管理する
         TileStatus[] mapStatus = new TileStatus[mapSizeX * mapSizeY];
         //マップ全体に壁とする
@@ -38,7 +42,7 @@ public class AutoMappingV2 : MonoBehaviour
         }
         //マップを分割するX
         System.Random random = new System.Random();
-        int randomX = random.Next(6, mapSizeX - 6);//部屋を作るときの最低サイズ（６）
+        int randomX = random.Next(8, mapSizeX - 8);//部屋を作るときの最低サイズ（６）
         for (int i = 0; i < mapStatus.Length; i++)
         {
             if (i % mapSizeX == randomX - 1)//配列は0スタートだから-1
@@ -46,6 +50,8 @@ public class AutoMappingV2 : MonoBehaviour
                 mapStatus[i] = TileStatus.Road;
             }
         }
+        int roadCount = 0;
+        int randomRoad = random.Next(3, mapSizeY - 2);
         //分割して小さいほうには1：1サイズ部屋を作る
         if (randomX < mapSizeX / 2)
         {
@@ -55,6 +61,16 @@ public class AutoMappingV2 : MonoBehaviour
                 if (mapSizeX * 2 < i && i < mapStatus.Length - mapSizeX * 2 && 2 <= i % mapSizeX && i % mapSizeX <= randomX - 4)
                 {
                     mapStatus[i] = TileStatus.Road;
+                }
+                //道を境目につなげる
+                if (i % mapSizeX == randomX - 1)
+                {
+                    roadCount++;
+                    if (roadCount == randomRoad)
+                    {
+                        mapStatus[i - 1] = TileStatus.Road;
+                        mapStatus[i - 2] = TileStatus.Road;
+                    }
                 }
             }
         }
@@ -66,6 +82,16 @@ public class AutoMappingV2 : MonoBehaviour
                 if (mapSizeX * 2 < i && i < mapStatus.Length - mapSizeX * 2 && randomX + 2 <= i % mapSizeX && i % mapSizeX <= mapSizeX - 2)
                 {
                     mapStatus[i] = TileStatus.Road;
+                }
+                //道を境目につなげる
+                if (i % mapSizeX == randomX - 1)
+                {
+                    roadCount++;
+                    if (roadCount == randomRoad)
+                    {
+                        mapStatus[i + 1] = TileStatus.Road;
+                        mapStatus[i + 2] = TileStatus.Road;
+                    }
                 }
             }
         }
@@ -83,7 +109,7 @@ public class AutoMappingV2 : MonoBehaviour
                     switch (mapStatus[i])
                     {
                         case TileStatus.Wall:
-                            m_tilemap.SetTile(m_vector3Int,m_wallTile[0]);
+                            m_tilemap.SetTile(m_vector3Int, m_wallTile[0]);
                             break;
                         case TileStatus.Road:
                             m_tilemap.SetTile(m_vector3Int, m_roadTile[0]);
@@ -95,7 +121,7 @@ public class AutoMappingV2 : MonoBehaviour
                 m_vector3Int.y++;
                 m_vector3Int.x -= mapSizeX;
             }
-           
+
         }
     }
 
