@@ -42,7 +42,7 @@ public class AutoMappingV2 : MonoBehaviour
         }
         //マップを分割するX
         System.Random random = new System.Random();
-        int randomX = random.Next(8, mapSizeX - 8);//部屋を作るときの最低サイズ（６）
+        int randomX = random.Next(8, mapSizeX - 8);//部屋を作るときの最低サイズ（８）
         for (int i = 0; i < mapStatus.Length; i++)
         {
             if (i % mapSizeX == randomX - 1)//配列は0スタートだから-1
@@ -96,17 +96,25 @@ public class AutoMappingV2 : MonoBehaviour
             }
         }
 
+       
 
 
 
+
+
+        TilePut(mapStatus,mapSizeX,mapSizeY);
+    }
+
+    void TilePut(TileStatus[] mapPutStatus,int mapPutSizeX,int mapPutSizeY)
+    {
         //タイルを置く
-        for (int i = 0; i < mapStatus.Length;)
+        for (int i = 0; i < mapPutStatus.Length;)
         {
-            for (int y = 0; y < mapSizeY; y++)
+            for (int y = 0; y < mapPutSizeY; y++)
             {
-                for (int x = 0; x < mapSizeX; x++)
+                for (int x = 0; x < mapPutSizeX; x++)
                 {
-                    switch (mapStatus[i])
+                    switch (mapPutStatus[i])
                     {
                         case TileStatus.Wall:
                             m_tilemap.SetTile(m_vector3Int, m_wallTile[0]);
@@ -119,11 +127,11 @@ public class AutoMappingV2 : MonoBehaviour
                     m_vector3Int.x++;
                 }
                 m_vector3Int.y++;
-                m_vector3Int.x -= mapSizeX;
+                m_vector3Int.x -= mapPutSizeX;
             }
-
         }
     }
+    
 
 
     enum TileStatus
