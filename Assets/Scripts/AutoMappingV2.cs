@@ -79,11 +79,11 @@ public class AutoMappingV2 : MonoBehaviour
             {
                 if (i % (mapSizeX * randomY) == 0 && 0 != i)//Y軸を
                 {
-                    i += randomX;//X軸から伸ばすため
+                    i += randomX - 1;//X軸から伸ばすため
                     while (i % mapSizeX < mapSizeX - 1)//X軸の端まで
                     {
-                        mapStatus[i] = TileStatus.Road;
                         i++;
+                        mapStatus[i] = TileStatus.Road;
                     }
                     break;
                 }
