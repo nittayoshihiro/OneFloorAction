@@ -87,7 +87,42 @@ public class AutoMappingV2 : MonoBehaviour
                     }
                     break;
                 }
+
             }
+            //小さいほうに1:1の部屋を作る
+            if (randomY < mapSizeY / 2)
+            {
+                for (int i = 0; i < mapStatus.Length; i++)
+                {
+                    //最初の２でY座標を確立、後の２つでX座標を確立
+                    if (mapSizeX * 2 <= i && i <= (randomY - 2) * mapSizeX - 1 && randomX + 2 <= i % mapSizeX && i % mapSizeX <= mapSizeX - 3)
+                    {
+                        mapStatus[i] = TileStatus.Road;
+                    }
+                    //もう一つ大きい部屋の場合も部屋を作る
+                    if (mapSizeX * (randomY + 3) <= i && i <= (mapSizeY - 2) * mapSizeX - 1 && randomX + 2 <= i % mapSizeX && i % mapSizeX <= mapSizeX - 3)
+                    {
+                        mapStatus[i] = TileStatus.Road;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < mapStatus.Length; i++)
+                {
+                    //最初の２でY座標を確立、後の２つでX座標を確立
+                    if (mapSizeX * 2 <= i && i <= (randomY - 2) * mapSizeX - 1 && randomX + 2 <= i % mapSizeX && i % mapSizeX <= mapSizeX - 3)
+                    {
+                        mapStatus[i] = TileStatus.Road;
+                    }
+                    //もう一つ大きい部屋の場合も部屋を作る
+                    if (mapSizeX * (randomY + 3) <= i && i <= (mapSizeY - 2) * mapSizeX - 1 && randomX + 2 <= i % mapSizeX && i % mapSizeX <= mapSizeX - 3)
+                    {
+                        mapStatus[i] = TileStatus.Road;
+                    }
+                }
+            }
+
         }
         else
         {
@@ -121,6 +156,39 @@ public class AutoMappingV2 : MonoBehaviour
                         i++;
                     }
                     break;
+                }
+            }
+            //小さいほうに1:1の部屋を作る
+            if (randomY < mapSizeY / 2)
+            {
+                for (int i = 0; i < mapStatus.Length; i++)
+                {
+                    //最初の２でY座標を確立、後の２つでX座標を確立
+                    if (mapSizeX * 2 <= i && i < mapSizeX * (randomY - 2) && 2 <= i % mapSizeX && i % mapSizeX <= randomX - 4)
+                    {
+                        mapStatus[i] = TileStatus.Road;
+                    }
+                    //もう一つ大きい部屋の場合も部屋を作る
+                    if (mapSizeX * (randomY+3) <= i && i < mapSizeX * (mapSizeY - 2) && 2 <= i % mapSizeX && i % mapSizeX <= randomX - 4)
+                    {
+                        mapStatus[i] = TileStatus.Road;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < mapStatus.Length; i++)
+                {
+                    //最初の２でY座標を確立、後の２つでX座標を確立
+                    if (mapSizeX * 2 <= i && i < mapSizeX * (randomY - 2) && 2 <= i % mapSizeX && i % mapSizeX <= randomX - 4)
+                    {
+                        mapStatus[i] = TileStatus.Road;
+                    }
+                    //もう一つ大きい部屋の場合も部屋を作る
+                    if (mapSizeX * (randomY + 3) <= i && i < mapSizeX * (mapSizeY - 2) && 2 <= i % mapSizeX && i % mapSizeX <= randomX - 4)
+                    {
+                        mapStatus[i] = TileStatus.Road;
+                    }
                 }
             }
         }
