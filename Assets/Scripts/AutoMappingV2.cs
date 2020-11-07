@@ -51,7 +51,7 @@ public class AutoMappingV2 : MonoBehaviour
             }
         }
         int roadCount = 0;
-        int randomRoad = random.Next(3, mapSizeY - 2);
+        int randomRoadX = random.Next(3, mapSizeY - 2);
         //分割して小さいほうには1：1サイズ部屋を作る
         if (randomX < mapSizeX / 2)
         {
@@ -66,13 +66,15 @@ public class AutoMappingV2 : MonoBehaviour
                 if (i % mapSizeX == randomX - 1)
                 {
                     roadCount++;
-                    if (roadCount == randomRoad)
+                    if (roadCount == randomRoadX)
                     {
                         mapStatus[i - 1] = TileStatus.Road;
                         mapStatus[i - 2] = TileStatus.Road;
                     }
                 }
             }
+            roadCount = 0;
+            int randomRoadY = random.Next(3, mapSizeY - 2);
             //マップを分割するY
             int randomY = random.Next(8, mapSizeY - 8);//部屋を作るときの最低サイズ（８）
             for (int i = 0; i < mapStatus.Length; i++)
@@ -98,6 +100,11 @@ public class AutoMappingV2 : MonoBehaviour
                     if (mapSizeX * 2 <= i && i <= (randomY - 2) * mapSizeX - 1 && randomX + 2 <= i % mapSizeX && i % mapSizeX <= mapSizeX - 3)
                     {
                         mapStatus[i] = TileStatus.Road;
+                    }
+                    //道を境目につなげる
+                    if (true)
+                    {
+
                     }
                     //もう一つ大きい部屋の場合も部屋を作る
                     if (mapSizeX * (randomY + 3) <= i && i <= (mapSizeY - 2) * mapSizeX - 1 && randomX + 2 <= i % mapSizeX && i % mapSizeX <= mapSizeX - 3)
@@ -137,7 +144,7 @@ public class AutoMappingV2 : MonoBehaviour
                 if (i % mapSizeX == randomX - 1)
                 {
                     roadCount++;
-                    if (roadCount == randomRoad)
+                    if (roadCount == randomRoadX)
                     {
                         mapStatus[i + 1] = TileStatus.Road;
                         mapStatus[i + 2] = TileStatus.Road;
@@ -169,7 +176,7 @@ public class AutoMappingV2 : MonoBehaviour
                         mapStatus[i] = TileStatus.Road;
                     }
                     //もう一つ大きい部屋の場合も部屋を作る
-                    if (mapSizeX * (randomY+3) <= i && i < mapSizeX * (mapSizeY - 2) && 2 <= i % mapSizeX && i % mapSizeX <= randomX - 4)
+                    if (mapSizeX * (randomY + 3) <= i && i < mapSizeX * (mapSizeY - 2) && 2 <= i % mapSizeX && i % mapSizeX <= randomX - 4)
                     {
                         mapStatus[i] = TileStatus.Road;
                     }
@@ -192,11 +199,6 @@ public class AutoMappingV2 : MonoBehaviour
                 }
             }
         }
-
-
-
-
-
 
 
         TilePut(mapStatus, mapSizeX, mapSizeY);
