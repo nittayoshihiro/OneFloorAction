@@ -41,7 +41,9 @@ public class AutoMappingV3 : MonoBehaviour
                 mapStatus[i, j] = TileStatus.Wall;
             }
         }
-        int randomRoadX = Random.Range(minimumRoomSize, mapSizeX - minimumRoomSize);
+        //部屋に壁の厚さ２を入れる
+        int randomRoadX = Random.Range(minimumRoomSize + 4, mapSizeX - (minimumRoomSize + 5));
+        int randomRoadY = Random.Range(minimumRoomSize + 4, mapSizeY - (minimumRoomSize + 5));
         //X軸で区切る
         for (int i = 0; i < mapSizeX - 1; i++)
         {
@@ -50,6 +52,51 @@ public class AutoMappingV3 : MonoBehaviour
                 if (i == randomRoadX)
                 {
                     mapStatus[i, j] = TileStatus.Road;
+                }
+                //小さいほうに部屋を作る
+                if (randomRoadX < mapSizeX / 2)
+                {
+                    if (2 <= i && i < randomRoadX - 2 && 2 <= j && j <= mapSizeY - 2 * 2)
+                    {
+                        mapStatus[i, j] = TileStatus.Road;
+                    }
+                    //Y軸で区切る
+                    if (j == randomRoadY && randomRoadX < i)
+                    {
+                        mapStatus[i, j] = TileStatus.Road;
+                    }
+                    //Y軸上部屋
+                    if (randomRoadX + 2 < i && i <= mapSizeX - 2 * 2 && 2 <= j && j < randomRoadY - 2)
+                    {
+                        mapStatus[i, j] = TileStatus.Road;
+                    }
+                    //Y軸下部屋
+                    if (randomRoadX + 2 < i && i <= mapSizeX - 2 * 2 && randomRoadY + 2 < j && j <= mapSizeY - 2 * 2)
+                    {
+                        mapStatus[i, j] = TileStatus.Road;
+                    }
+                }
+                else
+                {
+                    if (randomRoadX + 2 < i && i <= mapSizeX - 2 * 2 && 2 <= j && j <= mapSizeY - 2 * 2)
+                    {
+                        mapStatus[i, j] = TileStatus.Road;
+                    }
+                    //Y軸で区切る
+                    if (j == randomRoadY && i < randomRoadX)
+                    {
+                        mapStatus[i, j] = TileStatus.Road;
+                    }
+                    //Y軸上部屋
+                    if (2 <= i && i <= randomRoadX - 2 * 2 && 2 <= j && j < randomRoadY - 2)
+                    {
+                        mapStatus[i, j] = TileStatus.Road;
+                    }
+                    //Y軸下部屋
+                    if (2 <= i && i <= randomRoadX - 2 * 2 && randomRoadY + 2 < j && j <= mapSizeY - 2 * 2)
+                    {
+                        mapStatus[i, j] = TileStatus.Road;
+                    }
                 }
             }
         }
