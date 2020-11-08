@@ -26,17 +26,31 @@ public class AutoMappingV3 : MonoBehaviour
     public void AutoMappingButtun()
     {
         Debug.Log("Mapping");
+        m_tilemap.ClearAllTiles();
         AutoMapping(m_mapSizeX, m_mapSizeY, m_minimumRoomSize);
     }
 
     void AutoMapping(int mapSizeX, int mapSizeY, int minimumRoomSize)
     {
+        //全部壁にする
         TileStatus[,] mapStatus = new TileStatus[mapSizeX, mapSizeY];
         for (int i = 0; i < mapSizeX - 1; i++)
         {
             for (int j = 0; j < mapSizeY - 1; j++)
             {
                 mapStatus[i, j] = TileStatus.Wall;
+            }
+        }
+        int randomRoadX = Random.Range(minimumRoomSize, mapSizeX - minimumRoomSize);
+        //X軸で区切る
+        for (int i = 0; i < mapSizeX - 1; i++)
+        {
+            for (int j = 0; j < mapSizeY - 1; j++)
+            {
+                if (i == randomRoadX)
+                {
+                    mapStatus[i, j] = TileStatus.Road;
+                }
             }
         }
 
@@ -49,7 +63,7 @@ public class AutoMappingV3 : MonoBehaviour
                 switch (mapStatus[i, j])
                 {
                     case TileStatus.Wall:
-                        m_tilemap.SetTile(m_vector3Int,m_wallTile);
+                        m_tilemap.SetTile(m_vector3Int, m_wallTile);
                         break;
                     case TileStatus.Road:
                         m_tilemap.SetTile(m_vector3Int, m_roadTile);
