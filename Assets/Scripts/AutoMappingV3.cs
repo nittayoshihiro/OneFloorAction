@@ -9,7 +9,7 @@ public class AutoMappingV3 : MonoBehaviour
     [SerializeField] Tile m_wallTile;
     [SerializeField] Tile m_roadTile;
     Vector3Int m_vector3Int = new Vector3Int(0, 0, 0);
-
+    TileStatus[,] m_mapStatus;
 
     // Start is called before the first frame update
     void Start()
@@ -30,15 +30,22 @@ public class AutoMappingV3 : MonoBehaviour
         AutoMapping(m_mapSizeX, m_mapSizeY, m_minimumRoomSize);
     }
 
+    //get only 自動プロパティ
+    /// <summary>マップステータスを取得</summary>
+    public TileStatus[,] GetMappingData
+    {
+        get { return m_mapStatus; }
+    }
+
     void AutoMapping(int mapSizeX, int mapSizeY, int minimumRoomSize)
     {
         //全部壁にする
-        TileStatus[,] mapStatus = new TileStatus[mapSizeX, mapSizeY];
+        m_mapStatus = new TileStatus[mapSizeX, mapSizeY];
         for (int i = 0; i < mapSizeX - 1; i++)
         {
             for (int j = 0; j < mapSizeY - 1; j++)
             {
-                mapStatus[i, j] = TileStatus.Wall;
+                m_mapStatus[i, j] = TileStatus.Wall;
             }
         }
         //部屋に壁の厚さ２を入れる
@@ -57,89 +64,89 @@ public class AutoMappingV3 : MonoBehaviour
             {
                 if (i == randomRoadX)
                 {
-                    mapStatus[i, j] = TileStatus.Road;
+                    m_mapStatus[i, j] = TileStatus.Road;
                 }
                 //小さいほうに部屋を作る
                 if (randomRoadX < mapSizeX / 2)
                 {
                     if (2 <= i && i < randomRoadX - 2 && 2 <= j && j <= mapSizeY - 2 * 2)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                     //道作成
                     if (randomRoomRoadX == j && randomRoadX - 2 <= i && i < randomRoadX)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                     //Y軸で区切る
                     if (randomRoadY == j && randomRoadX < i)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                     //Y軸上部屋
                     if (randomRoadX + 2 < i && i <= mapSizeX - 2 * 2 && 2 <= j && j < randomRoadY - 2)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                     //道を作成
                     if (randomRoomRoadY == i && randomRoadY < j && j <= randomRoadY + 2)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                     //Y軸下部屋
                     if (randomRoadX + 2 < i && i <= mapSizeX - 2 * 2 && randomRoadY + 2 < j && j <= mapSizeY - 2 * 2)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                     //最後は２本道作成
                     if (randomRoomRoadLastX == j && randomRoadX < i && i <= randomRoadX + 2)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                     if (randomRoomRoadLastY == i && randomRoadY - 2 <= j && j < randomRoadY)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                 }
                 else
                 {
                     if (randomRoadX + 2 < i && i <= mapSizeX - 2 * 2 && 2 <= j && j <= mapSizeY - 2 * 2)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                     //道作成
                     if (randomRoomRoadX == j && randomRoadX < i && i <= randomRoadX + 2)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                     //Y軸で区切る
                     if (j == randomRoadY && i < randomRoadX)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                     //Y軸上部屋
                     if (2 <= i && i < randomRoadX - 2 && 2 <= j && j < randomRoadY - 2)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                     //道を作成
                     if (randomRoomRoadY2 == i && randomRoadY < j && j <= randomRoadY + 2)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                     //Y軸下部屋
                     if (2 <= i && i < randomRoadX - 2 && randomRoadY + 2 < j && j <= mapSizeY - 2 * 2)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                     //最後は２本道作成
                     if (randomRoomRoadLastX == j && randomRoadX - 2 <= i && i < randomRoadX)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                     if (randomRoomRoadLastY2 == i && randomRoadY - 2 <= j && j < randomRoadY)
                     {
-                        mapStatus[i, j] = TileStatus.Road;
+                        m_mapStatus[i, j] = TileStatus.Road;
                     }
                 }
             }
@@ -151,19 +158,19 @@ public class AutoMappingV3 : MonoBehaviour
             {
                 for (int j = 0; j < mapSizeY - 1; j++)
                 {
-                    if (mapStatus[i + 1, j] == TileStatus.Road || mapStatus[i - 1, j] == TileStatus.Road)
+                    if (m_mapStatus[i + 1, j] == TileStatus.Road || m_mapStatus[i - 1, j] == TileStatus.Road)
                     {
                         break;
                     }
-                    mapStatus[i, j] = TileStatus.Wall;
+                    m_mapStatus[i, j] = TileStatus.Wall;
                 }
                 for (int j = mapSizeY - 1; 0 < j; j--)
                 {
-                    if (mapStatus[i + 1, j] == TileStatus.Road || mapStatus[i - 1, j] == TileStatus.Road)
+                    if (m_mapStatus[i + 1, j] == TileStatus.Road || m_mapStatus[i - 1, j] == TileStatus.Road)
                     {
                         break;
                     }
-                    mapStatus[i, j] = TileStatus.Wall;
+                    m_mapStatus[i, j] = TileStatus.Wall;
                 }
             }
         }
@@ -176,22 +183,22 @@ public class AutoMappingV3 : MonoBehaviour
                 {
                     for (int i = mapSizeX - 1; 0 < i; i--)
                     {
-                        if (mapStatus[i, j + 1] == TileStatus.Road || mapStatus[i, j - 1] == TileStatus.Road)
+                        if (m_mapStatus[i, j + 1] == TileStatus.Road || m_mapStatus[i, j - 1] == TileStatus.Road)
                         {
                             break;
                         }
-                        mapStatus[i, j] = TileStatus.Wall;
+                        m_mapStatus[i, j] = TileStatus.Wall;
                     }
                 }
                 else
                 {
                     for (int i = 0; i < mapSizeX - 1; i++)
                     {
-                        if (mapStatus[i, j + 1] == TileStatus.Road || mapStatus[i, j - 1] == TileStatus.Road)
+                        if (m_mapStatus[i, j + 1] == TileStatus.Road || m_mapStatus[i, j - 1] == TileStatus.Road)
                         {
                             break;
                         }
-                        mapStatus[i, j] = TileStatus.Wall;
+                        m_mapStatus[i, j] = TileStatus.Wall;
                     }
 
                 }
@@ -204,7 +211,7 @@ public class AutoMappingV3 : MonoBehaviour
             for (int j = 0; j < mapSizeY - 1; j++)
             {
                 m_vector3Int = new Vector3Int(i, j, 0);
-                switch (mapStatus[i, j])
+                switch (m_mapStatus[i, j])
                 {
                     case TileStatus.Wall:
                         m_tilemap.SetTile(m_vector3Int, m_wallTile);
@@ -219,7 +226,7 @@ public class AutoMappingV3 : MonoBehaviour
     }
 
     /// <summary>tileステータス</summary>
-    enum TileStatus
+    public enum TileStatus
     {
         Wall,
         Road
