@@ -207,8 +207,10 @@ MonoBehaviour:
   m_wallTile: {fileID: 11400000, guid: ea3fb41c9a86f6a41af0df22dbe9b431, type: 2}
   m_roadTile: {fileID: 11400000, guid: aca2fca860e052a4d8830a303a516938, type: 2}
   m_playerTile: {fileID: 11400000, guid: b1e4b074e34c2b646b9b931b2167bc36, type: 2}
+  m_goalTile: {fileID: 11400000, guid: 904a1e21036e1ba44ab60fab7e216e01, type: 2}
   m_playerPrefab: {fileID: 6345448984048558508, guid: 1d00e769af02b574797ff5377f656b0d,
     type: 3}
+  m_goalPrefab: {fileID: 0}
 --- !u!1 &222642196
 GameObject:
   m_ObjectHideFlags: 0

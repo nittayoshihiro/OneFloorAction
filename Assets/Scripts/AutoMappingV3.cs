@@ -9,7 +9,9 @@ public class AutoMappingV3 : MonoBehaviour
     [SerializeField] Tile m_wallTile;
     [SerializeField] Tile m_roadTile;
     [SerializeField] Tile m_playerTile;
+    [SerializeField] Tile m_goalTile;
     [SerializeField] GameObject m_playerPrefab;
+    [SerializeField] GameObject m_goalPrefab;
     Vector3Int m_vector3Int = new Vector3Int(0, 0, 0);
     TileStatus[,] m_mapStatus;
 
@@ -76,6 +78,11 @@ public class AutoMappingV3 : MonoBehaviour
                     {
                         m_mapStatus[i, j] = TileStatus.Road;
                     }
+                    //ゴールを作成
+                    if (i == (2 + randomRoadX - 2) / 2 && j == (2 + mapSizeY - 2 * 2) / 2)
+                    {
+                        m_mapStatus[i, j] = TileStatus.Goal;
+                    }
                     //道作成
                     if (randomRoomRoadX == j && randomRoadX - 2 <= i && i < randomRoadX)
                     {
@@ -121,6 +128,11 @@ public class AutoMappingV3 : MonoBehaviour
                     if (randomRoadX + 2 < i && i <= mapSizeX - 2 * 2 && 2 <= j && j <= mapSizeY - 2 * 2)
                     {
                         m_mapStatus[i, j] = TileStatus.Road;
+                    }
+                    //ゴールを作成
+                    if (i == (randomRoadX + 2 + mapSizeX - 2 * 2) / 2 && j == (2 + mapSizeY - 2 * 2) / 2)
+                    {
+                        m_mapStatus[i, j] = TileStatus.Goal;
                     }
                     //道作成
                     if (randomRoomRoadX == j && randomRoadX < i && i <= randomRoadX + 2)
@@ -234,7 +246,11 @@ public class AutoMappingV3 : MonoBehaviour
                         break;
                     case TileStatus.Player:
                         m_tilemap.SetTile(m_vector3Int, m_playerTile);
-                        Instantiate(m_playerPrefab, m_vector3Int, Quaternion.identity);
+                        Instantiate(m_playerPrefab,new Vector3(m_vector3Int.x+0.5f,m_vector3Int.y+0.5f,m_vector3Int.z), Quaternion.identity);
+                        break;
+                    case TileStatus.Goal:
+                        m_tilemap.SetTile(m_vector3Int, m_goalTile);
+                        //Instantiate(m_goalPrefab, new Vector3(m_vector3Int.x + 0.5f, m_vector3Int.y + 0.5f, m_vector3Int.z), Quaternion.identity);
                         break;
                 }
 
@@ -248,5 +264,6 @@ public class AutoMappingV3 : MonoBehaviour
         Wall,
         Road,
         Player,
+        Goal
     }
 }
