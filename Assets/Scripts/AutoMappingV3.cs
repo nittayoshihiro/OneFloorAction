@@ -8,6 +8,8 @@ public class AutoMappingV3 : MonoBehaviour
     [SerializeField] Tilemap m_tilemap;
     [SerializeField] Tile m_wallTile;
     [SerializeField] Tile m_roadTile;
+    [SerializeField] Tile m_playerTile;
+    [SerializeField] GameObject m_playerPrefab;
     Vector3Int m_vector3Int = new Vector3Int(0, 0, 0);
     TileStatus[,] m_mapStatus;
 
@@ -57,6 +59,7 @@ public class AutoMappingV3 : MonoBehaviour
         int randomRoomRoadLastX = Random.Range(randomRoadY + 3, mapSizeY - 3);
         int randomRoomRoadLastY = Random.Range(randomRoadX + 3, mapSizeX - 3);
         int randomRoomRoadLastY2 = Random.Range(3, randomRoadX - 3);
+
         //X軸で区切る
         for (int i = 0; i < mapSizeX - 1; i++)
         {
@@ -83,17 +86,22 @@ public class AutoMappingV3 : MonoBehaviour
                     {
                         m_mapStatus[i, j] = TileStatus.Road;
                     }
-                    //Y軸上部屋
+                    //Y軸下部屋
                     if (randomRoadX + 2 < i && i <= mapSizeX - 2 * 2 && 2 <= j && j < randomRoadY - 2)
                     {
                         m_mapStatus[i, j] = TileStatus.Road;
+                    }
+                    //プレイヤースポーンタイル
+                    if (i == (randomRoadX + 2 + mapSizeX - 2 * 2) / 2 && j == (2 + randomRoadY - 2) / 2)
+                    {
+                        m_mapStatus[i, j] = TileStatus.Player;
                     }
                     //道を作成
                     if (randomRoomRoadY == i && randomRoadY < j && j <= randomRoadY + 2)
                     {
                         m_mapStatus[i, j] = TileStatus.Road;
                     }
-                    //Y軸下部屋
+                    //Y軸上部屋
                     if (randomRoadX + 2 < i && i <= mapSizeX - 2 * 2 && randomRoadY + 2 < j && j <= mapSizeY - 2 * 2)
                     {
                         m_mapStatus[i, j] = TileStatus.Road;
@@ -124,7 +132,7 @@ public class AutoMappingV3 : MonoBehaviour
                     {
                         m_mapStatus[i, j] = TileStatus.Road;
                     }
-                    //Y軸上部屋
+                    //Y軸下部屋
                     if (2 <= i && i < randomRoadX - 2 && 2 <= j && j < randomRoadY - 2)
                     {
                         m_mapStatus[i, j] = TileStatus.Road;
@@ -134,10 +142,15 @@ public class AutoMappingV3 : MonoBehaviour
                     {
                         m_mapStatus[i, j] = TileStatus.Road;
                     }
-                    //Y軸下部屋
+                    //Y軸上部屋
                     if (2 <= i && i < randomRoadX - 2 && randomRoadY + 2 < j && j <= mapSizeY - 2 * 2)
                     {
                         m_mapStatus[i, j] = TileStatus.Road;
+                    }
+                    //プレイヤースポーンタイル
+                    if (i == (2 + randomRoadX - 2) / 2 && j == (2 + randomRoadY - 2) / 2)
+                    {
+                        m_mapStatus[i, j] = TileStatus.Player;
                     }
                     //最後は２本道作成
                     if (randomRoomRoadLastX == j && randomRoadX - 2 <= i && i < randomRoadX)
@@ -219,6 +232,10 @@ public class AutoMappingV3 : MonoBehaviour
                     case TileStatus.Road:
                         m_tilemap.SetTile(m_vector3Int, m_roadTile);
                         break;
+                    case TileStatus.Player:
+                        m_tilemap.SetTile(m_vector3Int, m_playerTile);
+                        Instantiate(m_playerPrefab, m_vector3Int, Quaternion.identity);
+                        break;
                 }
 
             }
@@ -229,6 +246,7 @@ public class AutoMappingV3 : MonoBehaviour
     public enum TileStatus
     {
         Wall,
-        Road
+        Road,
+        Player,
     }
 }
