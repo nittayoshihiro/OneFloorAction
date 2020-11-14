@@ -11,9 +11,10 @@ public class AutoMappingV3 : MonoBehaviour
     [SerializeField] Tile m_playerTile;
     [SerializeField] Tile m_goalTile;
     [SerializeField] GameObject m_playerPrefab;
-    [SerializeField] GameObject m_goalPrefab;
     Vector3Int m_vector3Int = new Vector3Int(0, 0, 0);
     TileStatus[,] m_mapStatus;
+    /// <summary>ゴールポジション</summary>
+    Vector3 m_goalPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -35,6 +36,10 @@ public class AutoMappingV3 : MonoBehaviour
     }
 
     //get only 自動プロパティ
+    public Vector3 GetGoalPosition
+    {
+        get { return m_goalPosition;}
+    }
     /// <summary>マップステータスを取得</summary>
     public TileStatus[,] GetMappingData
     {
@@ -250,7 +255,7 @@ public class AutoMappingV3 : MonoBehaviour
                         break;
                     case TileStatus.Goal:
                         m_tilemap.SetTile(m_vector3Int, m_goalTile);
-                        //Instantiate(m_goalPrefab, new Vector3(m_vector3Int.x + 0.5f, m_vector3Int.y + 0.5f, m_vector3Int.z), Quaternion.identity);
+                        m_goalPosition = new Vector3(m_vector3Int.x+0.5f,m_vector3Int.y+0.5f,0);
                         break;
                 }
 
