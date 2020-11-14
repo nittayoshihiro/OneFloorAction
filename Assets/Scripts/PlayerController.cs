@@ -20,25 +20,30 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Vector3 pos = this.gameObject.transform.position;
+        PlayerMove(pos);
+    }
+
+    /// <summary>プレイヤー移動</summary>
+    void PlayerMove(Vector3 m_vector3)
+    {
         float h = Input.GetAxisRaw("Horizontal");   // 垂直方向の入力を取得する
         float v = Input.GetAxisRaw("Vertical");     // 水平方向の入力を取得する
         if (0 < h)
         {
-            this.gameObject.transform.position = new Vector3(pos.x + m_playerSpeed, pos.y, pos.z);
+            this.gameObject.transform.position = new Vector3(m_vector3.x + m_playerSpeed, m_vector3.y, m_vector3.z);
         }
         else if (h < 0)
         {
-            this.gameObject.transform.position = new Vector3(pos.x - m_playerSpeed, pos.y, pos.z);
+            this.gameObject.transform.position = new Vector3(m_vector3.x - m_playerSpeed, m_vector3.y, m_vector3.z);
         }
         else if (0 < v)
         {
-            this.gameObject.transform.position = new Vector3(pos.x, pos.y + m_playerSpeed, pos.z);
+            this.gameObject.transform.position = new Vector3(m_vector3.x, m_vector3.y + m_playerSpeed, m_vector3.z);
         }
         else if (v < 0)
         {
-            this.gameObject.transform.position = new Vector3(pos.x, pos.y - m_playerSpeed, pos.z);
+            this.gameObject.transform.position = new Vector3(m_vector3.x, m_vector3.y - m_playerSpeed, m_vector3.z);
         }
-
     }
 
     enum PlayerMoveStatus
