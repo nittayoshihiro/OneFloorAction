@@ -1,15 +1,12 @@
 ﻿using Cinemachine;//Cinemachineを使うため
+using System.Collections;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] float m_playerSpeed = 0.01f;
-    /// <summary>プレイヤーの前ポジション</summary>
-    Vector3 m_oldPlayerPosition;
-    /// <summary>ゴールポジション</summary>
-    Vector3 m_goalPosition;
-    /// <summary>移動できるか</summary>
-    bool m_playerMoveNow;
+    [SerializeField] float m_playerSpeed = 0.1f;
+    public Coroutine myCor;
+    bool m_corNow;
 
     // Start is called before the first frame update
     void Start()
@@ -20,55 +17,66 @@ public class PlayerController : MonoBehaviour
         {
             vCam.Follow = transform;
         }
-        m_playerMoveNow = true;
-        //ゴールポジションを取得します
-        AutoMappingV3 m_autoMappingV3 = GameObject.FindObjectOfType<AutoMappingV3>();
-        m_goalPosition = m_autoMappingV3.GetGoalPosition;
-        Debug.Log(m_goalPosition);
-        //ポジションを残します
-        m_oldPlayerPosition = this.gameObject.transform.position;
+        m_corNow = true;
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector3 pos = this.gameObject.transform.position;
-        if (m_playerMoveNow)
+        float v = Input.GetAxisRaw("Vertical");     // 水平方向の入力を取得する
+        float h = Input.GetAxisRaw("Horizontal");   // 垂直方向の入力を取得する
+        if (m_corNow)
         {
-            PlayerMove(pos);
+            if (0 < v)
+            {
+                Vector3 willPos = new Vector3(pos.x, pos.y + 1f, pos.z);
+                StartCor(willPos);
+            }
+            else if (v < 0)
+            {
+                Vector3 willPos = new Vector3(pos.x, pos.y - 1f, pos.z);
+                StartCor(willPos);
+            }
+            else if (0 < h)
+            {
+                Vector3 willPos = new Vector3(pos.x + 1f, pos.y, pos.z);
+                StartCor(willPos);
+            }
+            else if (h < 0)
+            {
+                Vector3 willPos = new Vector3(pos.x - 1f, pos.y, pos.z);
+                StartCor(willPos);
+            }
         }
-        //ゴール判定
-        if (m_oldPlayerPosition.x <= m_goalPosition.x + 0.5f && m_goalPosition.x - 0.5f <= pos.x && m_oldPlayerPosition.y <= m_goalPosition.y + 0.5f && m_goalPosition.y - 0.5f <= pos.y)
-        {
-            Debug.Log("Destroy");
-            Destroy(this.gameObject);
-        }
-        m_oldPlayerPosition = this.gameObject.transform.position;
+        
     }
 
-    /// <summary>プレイヤー移動</summary>
-    void PlayerMove(Vector3 Vector3)
+    //MoveToをスタートさせるメソッド
+    //外部からコルーチンを呼び出すときはこのメソッドを使う
+    public void StartCor(Vector3 goal)
     {
-        m_playerMoveNow = false;
-        float h = Input.GetAxisRaw("Horizontal");   // 垂直方向の入力を取得する
-        float v = Input.GetAxisRaw("Vertical");     // 水平方向の入力を取得する
-        if (0 < h)
+        if (myCor != null)
         {
-            this.gameObject.transform.position = new Vector3(Vector3.x + m_playerSpeed, Vector3.y, Vector3.z);
+            StopCoroutine(myCor);
         }
-        else if (h < 0)
+        myCor = StartCoroutine(MoveTo(goal));
+    }
+
+    //goalの位置までスムーズに移動する
+    public IEnumerator MoveTo(Vector3 goal)
+    {
+        m_corNow = false;
+        while (Vector3.Distance(transform.position, goal) > 0.1f)
         {
-            this.gameObject.transform.position = new Vector3(Vector3.x - m_playerSpeed, Vector3.y, Vector3.z);
+            Vector3 nextPos = Vector3.Lerp(transform.position, goal, Time.deltaTime * m_playerSpeed);
+            transform.position = nextPos;
+            yield return null;//ここまでが1フレームの間に処理される
         }
-        else if (0 < v)
-        {
-            this.gameObject.transform.position = new Vector3(Vector3.x, Vector3.y + m_playerSpeed, Vector3.z);
-        }
-        else if (v < 0)
-        {
-            this.gameObject.transform.position = new Vector3(Vector3.x, Vector3.y - m_playerSpeed, Vector3.z);
-        }
-        m_playerMoveNow = true;
+        transform.position = goal;
+        print("終了");
+        m_corNow = true;
+        yield break;//処理が終わったら破棄する
     }
 
 
