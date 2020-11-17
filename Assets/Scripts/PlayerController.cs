@@ -6,7 +6,6 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] float m_playerSpeed = 0.1f;
     public Coroutine myCor;
-    bool m_corNow;
 
     // Start is called before the first frame update
     void Start()
@@ -17,7 +16,6 @@ public class PlayerController : MonoBehaviour
         {
             vCam.Follow = transform;
         }
-        m_corNow = true;
     }
 
     // Update is called once per frame
@@ -26,47 +24,46 @@ public class PlayerController : MonoBehaviour
         Vector3 pos = this.gameObject.transform.position;
         float v = Input.GetAxisRaw("Vertical");     // 水平方向の入力を取得する
         float h = Input.GetAxisRaw("Horizontal");   // 垂直方向の入力を取得する
-        if (m_corNow)
+
+        Debug.Log(myCor);
+        if (0 < v)
         {
-            if (0 < v)
-            {
-                Vector3 willPos = new Vector3(pos.x, pos.y + 1f, pos.z);
-                StartCor(willPos);
-            }
-            else if (v < 0)
-            {
-                Vector3 willPos = new Vector3(pos.x, pos.y - 1f, pos.z);
-                StartCor(willPos);
-            }
-            else if (0 < h)
-            {
-                Vector3 willPos = new Vector3(pos.x + 1f, pos.y, pos.z);
-                StartCor(willPos);
-            }
-            else if (h < 0)
-            {
-                Vector3 willPos = new Vector3(pos.x - 1f, pos.y, pos.z);
-                StartCor(willPos);
-            }
+            Vector3 willPos = new Vector3(pos.x, pos.y + 1f, pos.z);
+            StartCor(willPos);
         }
-        
+        else if (v < 0)
+        {
+            Vector3 willPos = new Vector3(pos.x, pos.y - 1f, pos.z);
+            StartCor(willPos);
+        }
+        else if (0 < h)
+        {
+            Vector3 willPos = new Vector3(pos.x + 1f, pos.y, pos.z);
+            StartCor(willPos);
+        }
+        else if (h < 0)
+        {
+            Vector3 willPos = new Vector3(pos.x - 1f, pos.y, pos.z);
+            StartCor(willPos);
+        }
+
+
     }
 
     //MoveToをスタートさせるメソッド
     //外部からコルーチンを呼び出すときはこのメソッドを使う
     public void StartCor(Vector3 goal)
     {
-        if (myCor != null)
+        if (myCor == null)
         {
-            StopCoroutine(myCor);
+            myCor = StartCoroutine(MoveTo(goal));
         }
-        myCor = StartCoroutine(MoveTo(goal));
+
     }
 
     //goalの位置までスムーズに移動する
     public IEnumerator MoveTo(Vector3 goal)
     {
-        m_corNow = false;
         while (Vector3.Distance(transform.position, goal) > 0.1f)
         {
             Vector3 nextPos = Vector3.Lerp(transform.position, goal, Time.deltaTime * m_playerSpeed);
@@ -74,8 +71,8 @@ public class PlayerController : MonoBehaviour
             yield return null;//ここまでが1フレームの間に処理される
         }
         transform.position = goal;
+        myCor = null;
         print("終了");
-        m_corNow = true;
         yield break;//処理が終わったら破棄する
     }
 
