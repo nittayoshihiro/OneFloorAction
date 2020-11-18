@@ -5,16 +5,22 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] float m_playerSpeed = 0.1f;
-    public Coroutine myCor;
+    public Coroutine m_myCor;
+    AutoMappingV3.TileStatus[,] m_mapStatus;
 
     // Start is called before the first frame update
     void Start()
     {
         //Virtual Camera がプレイヤーを見るように設定する
-        CinemachineVirtualCamera vCam = GameObject.FindObjectOfType<CinemachineVirtualCamera>();
-        if (vCam)
+        CinemachineVirtualCamera m_vCam = GameObject.FindObjectOfType<CinemachineVirtualCamera>();
+        if (m_vCam)
         {
-            vCam.Follow = transform;
+            m_vCam.Follow = transform;
+        }
+        AutoMappingV3 m_autoMapping = GameObject.FindObjectOfType<AutoMappingV3>();
+        if (m_autoMapping)
+        {
+            m_mapStatus = m_autoMapping.GetMappingData;
         }
     }
 
@@ -25,26 +31,37 @@ public class PlayerController : MonoBehaviour
         float v = Input.GetAxisRaw("Vertical");     // 水平方向の入力を取得する
         float h = Input.GetAxisRaw("Horizontal");   // 垂直方向の入力を取得する
 
-        Debug.Log(myCor);
         if (0 < v)
         {
-            Vector3 willPos = new Vector3(pos.x, pos.y + 1f, pos.z);
-            StartCor(willPos);
+            if (m_mapStatus[(int)pos.x, (int)pos.y + 1] != AutoMappingV3.TileStatus.Wall)
+            {
+                Vector3 willPos = new Vector3(pos.x, pos.y + 1f, pos.z);
+                StartCor(willPos);
+            }
         }
         else if (v < 0)
         {
-            Vector3 willPos = new Vector3(pos.x, pos.y - 1f, pos.z);
-            StartCor(willPos);
+            if (m_mapStatus[(int)pos.x, (int)pos.y - 1] != AutoMappingV3.TileStatus.Wall)
+            {
+                Vector3 willPos = new Vector3(pos.x, pos.y - 1f, pos.z);
+                StartCor(willPos);
+            }
         }
         else if (0 < h)
         {
-            Vector3 willPos = new Vector3(pos.x + 1f, pos.y, pos.z);
-            StartCor(willPos);
+            if (m_mapStatus[(int)pos.x + 1, (int)pos.y] != AutoMappingV3.TileStatus.Wall)
+            {
+                Vector3 willPos = new Vector3(pos.x + 1f, pos.y, pos.z);
+                StartCor(willPos);
+            }
         }
         else if (h < 0)
         {
-            Vector3 willPos = new Vector3(pos.x - 1f, pos.y, pos.z);
-            StartCor(willPos);
+            if (m_mapStatus[(int)pos.x - 1, (int)pos.y] != AutoMappingV3.TileStatus.Wall)
+            {
+                Vector3 willPos = new Vector3(pos.x - 1f, pos.y, pos.z);
+                StartCor(willPos);
+            }
         }
 
 
@@ -54,9 +71,9 @@ public class PlayerController : MonoBehaviour
     //外部からコルーチンを呼び出すときはこのメソッドを使う
     public void StartCor(Vector3 goal)
     {
-        if (myCor == null)
+        if (m_myCor == null)
         {
-            myCor = StartCoroutine(MoveTo(goal));
+            m_myCor = StartCoroutine(MoveTo(goal));
         }
 
     }
@@ -68,12 +85,15 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 nextPos = Vector3.Lerp(transform.position, goal, Time.deltaTime * m_playerSpeed);
             transform.position = nextPos;
-            yield return null;//ここまでが1フレームの間に処理される
+            //ここまでが1フレームの間に処理される
+            yield return null;
         }
+        //ポジションを修正
         transform.position = goal;
-        myCor = null;
+        m_myCor = null;
         print("終了");
-        yield break;//処理が終わったら破棄する
+        //処理が終わったら破棄する
+        yield break;
     }
 
 
