@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
 
         if (0 < v)
         {
+            //行き先が壁か判断する
             if (m_mapStatus[(int)pos.x, (int)pos.y + 1] != AutoMappingV3.TileStatus.Wall)
             {
                 Vector3 willPos = new Vector3(pos.x, pos.y + 1f, pos.z);
@@ -41,6 +42,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (v < 0)
         {
+            //行き先が壁か判断する
             if (m_mapStatus[(int)pos.x, (int)pos.y - 1] != AutoMappingV3.TileStatus.Wall)
             {
                 Vector3 willPos = new Vector3(pos.x, pos.y - 1f, pos.z);
@@ -49,6 +51,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (0 < h)
         {
+            //行き先が壁か判断する
             if (m_mapStatus[(int)pos.x + 1, (int)pos.y] != AutoMappingV3.TileStatus.Wall)
             {
                 Vector3 willPos = new Vector3(pos.x + 1f, pos.y, pos.z);
@@ -57,6 +60,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (h < 0)
         {
+            //行き先が壁か判断する
             if (m_mapStatus[(int)pos.x - 1, (int)pos.y] != AutoMappingV3.TileStatus.Wall)
             {
                 Vector3 willPos = new Vector3(pos.x - 1f, pos.y, pos.z);
@@ -64,6 +68,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        //自分のポジションがゴールポジションだったら
         if (m_mapStatus[(int)pos.x, (int)pos.y] == AutoMappingV3.TileStatus.Goal)
         {
             Debug.Log("ゴール");
