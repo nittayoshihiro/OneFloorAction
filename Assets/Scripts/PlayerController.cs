@@ -64,6 +64,11 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (m_mapStatus[(int)pos.x, (int)pos.y] == AutoMappingV3.TileStatus.Goal)
+        {
+            Debug.Log("ゴール");
+            Destroy(this.gameObject);
+        }
 
     }
 
@@ -95,6 +100,7 @@ public class PlayerController : MonoBehaviour
         //処理が終わったら破棄する
         yield break;
     }
+
 
 
     enum PlayerMoveStatus
