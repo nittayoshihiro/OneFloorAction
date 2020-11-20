@@ -28,18 +28,13 @@ public class AutoMappingV3 : MonoBehaviour
 
     }
 
-    public void AutoMappingButtun()
+    public void AutoMapping()
     {
         Debug.Log("Mapping");
         m_tilemap.ClearAllTiles();
         AutoMapping(m_mapSizeX, m_mapSizeY, m_minimumRoomSize);
     }
 
-    //get only 自動プロパティ
-    public Vector3 GetGoalPosition
-    {
-        get { return m_goalPosition;}
-    }
     /// <summary>マップステータスを取得</summary>
     public TileStatus[,] GetMappingData
     {

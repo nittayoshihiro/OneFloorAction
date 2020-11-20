@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float m_playerSpeed = 0.1f;
     public Coroutine m_myCor;
     AutoMappingV3.TileStatus[,] m_mapStatus;
+    GameManager m_gameManager;
 
     // Start is called before the first frame update
     void Start()
@@ -17,6 +18,7 @@ public class PlayerController : MonoBehaviour
         {
             m_vCam.Follow = transform;
         }
+        m_gameManager = GameObject.FindObjectOfType<GameManager>();
         AutoMappingV3 m_autoMapping = GameObject.FindObjectOfType<AutoMappingV3>();
         if (m_autoMapping)
         {
@@ -72,6 +74,7 @@ public class PlayerController : MonoBehaviour
         if (m_mapStatus[(int)pos.x, (int)pos.y] == AutoMappingV3.TileStatus.Goal)
         {
             Debug.Log("ゴール");
+            m_gameManager.GoalEvent();
             Destroy(this.gameObject);
         }
 
@@ -79,7 +82,7 @@ public class PlayerController : MonoBehaviour
 
     //MoveToをスタートさせるメソッド
     //外部からコルーチンを呼び出すときはこのメソッドを使う
-    public void StartCor(Vector3 goal)
+    void StartCor(Vector3 goal)
     {
         if (m_myCor == null)
         {
@@ -89,7 +92,7 @@ public class PlayerController : MonoBehaviour
     }
 
     //goalの位置までスムーズに移動する
-    public IEnumerator MoveTo(Vector3 goal)
+    IEnumerator MoveTo(Vector3 goal)
     {
         while (Vector3.Distance(transform.position, goal) > 0.1f)
         {
