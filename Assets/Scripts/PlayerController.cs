@@ -1,6 +1,7 @@
 ﻿using Cinemachine;//Cinemachineを使うため
 using System.Collections;
 using UnityEngine;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class PlayerController : MonoBehaviour
 {
@@ -30,43 +31,51 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Vector3 pos = this.gameObject.transform.position;
-        float v = Input.GetAxisRaw("Vertical");     // 水平方向の入力を取得する
-        float h = Input.GetAxisRaw("Horizontal");   // 垂直方向の入力を取得する
+        //float v = Input.GetAxisRaw("Vertical");     // 水平方向の入力を取得する
+        //float h = Input.GetAxisRaw("Horizontal");   // 垂直方向の入力を取得する
+        var x = CrossPlatformInputManager.GetAxis("Horizontal");
+        var y = CrossPlatformInputManager.GetAxis("Vertical");
 
-        if (0 < v)
+        if (Mathf.Abs(x) > Mathf.Abs(y))
         {
-            //行き先が壁か判断する
-            if (m_mapStatus[(int)pos.x, (int)pos.y + 1] != AutoMappingV3.TileStatus.Wall)
+            if (0 < x)
             {
-                Vector3 willPos = new Vector3(pos.x, pos.y + 1f, pos.z);
-                StartCor(willPos);
+                //行き先が壁か判断する
+                if (m_mapStatus[(int)pos.x + 1, (int)pos.y] != AutoMappingV3.TileStatus.Wall)
+                {
+                    Vector3 willPos = new Vector3(pos.x + 1f, pos.y, pos.z);
+                    StartCor(willPos);
+                }
+            }
+            else if (x < 0)
+            {
+                //行き先が壁か判断する
+                if (m_mapStatus[(int)pos.x - 1, (int)pos.y] != AutoMappingV3.TileStatus.Wall)
+                {
+                    Vector3 willPos = new Vector3(pos.x - 1f, pos.y, pos.z);
+                    StartCor(willPos);
+                }
             }
         }
-        else if (v < 0)
+        else
         {
-            //行き先が壁か判断する
-            if (m_mapStatus[(int)pos.x, (int)pos.y - 1] != AutoMappingV3.TileStatus.Wall)
+            if (0 < y)
             {
-                Vector3 willPos = new Vector3(pos.x, pos.y - 1f, pos.z);
-                StartCor(willPos);
+                //行き先が壁か判断する
+                if (m_mapStatus[(int)pos.x, (int)pos.y + 1] != AutoMappingV3.TileStatus.Wall)
+                {
+                    Vector3 willPos = new Vector3(pos.x, pos.y + 1f, pos.z);
+                    StartCor(willPos);
+                }
             }
-        }
-        else if (0 < h)
-        {
-            //行き先が壁か判断する
-            if (m_mapStatus[(int)pos.x + 1, (int)pos.y] != AutoMappingV3.TileStatus.Wall)
+            else if (y < 0)
             {
-                Vector3 willPos = new Vector3(pos.x + 1f, pos.y, pos.z);
-                StartCor(willPos);
-            }
-        }
-        else if (h < 0)
-        {
-            //行き先が壁か判断する
-            if (m_mapStatus[(int)pos.x - 1, (int)pos.y] != AutoMappingV3.TileStatus.Wall)
-            {
-                Vector3 willPos = new Vector3(pos.x - 1f, pos.y, pos.z);
-                StartCor(willPos);
+                //行き先が壁か判断する
+                if (m_mapStatus[(int)pos.x, (int)pos.y - 1] != AutoMappingV3.TileStatus.Wall)
+                {
+                    Vector3 willPos = new Vector3(pos.x, pos.y - 1f, pos.z);
+                    StartCor(willPos);
+                }
             }
         }
 
