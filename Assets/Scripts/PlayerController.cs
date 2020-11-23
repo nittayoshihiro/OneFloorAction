@@ -1,12 +1,13 @@
 ﻿using Cinemachine;//Cinemachineを使うため
 using System.Collections;
 using UnityEngine;
-using UnityStandardAssets.CrossPlatformInput;
+
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] float m_playerSpeed = 0.1f;
     public Coroutine m_myCor;
+    public FloatingJoystick m_joystick;
     AutoMappingV3.TileStatus[,] m_mapStatus;
     GameManager m_gameManager;
 
@@ -20,6 +21,7 @@ public class PlayerController : MonoBehaviour
             m_vCam.Follow = transform;
         }
         m_gameManager = GameObject.FindObjectOfType<GameManager>();
+        m_joystick = GameObject.FindObjectOfType<FloatingJoystick>();
         AutoMappingV3 m_autoMapping = GameObject.FindObjectOfType<AutoMappingV3>();
         if (m_autoMapping)
         {
@@ -31,10 +33,11 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Vector3 pos = this.gameObject.transform.position;
-        //float v = Input.GetAxisRaw("Vertical");     // 水平方向の入力を取得する
-        //float h = Input.GetAxisRaw("Horizontal");   // 垂直方向の入力を取得する
-        var x = CrossPlatformInputManager.GetAxis("Horizontal");
-        var y = CrossPlatformInputManager.GetAxis("Vertical");
+        // float y = Input.GetAxisRaw("Vertical");     // 水平方向の入力を取得する
+        // float x = Input.GetAxisRaw("Horizontal");   // 垂直方向の入力を取得する
+
+        float y = m_joystick.Vertical;     // 水平方向の入力を取得する
+        float x = m_joystick.Horizontal;   // 垂直方向の入力を取得する
 
         if (Mathf.Abs(x) > Mathf.Abs(y))
         {
