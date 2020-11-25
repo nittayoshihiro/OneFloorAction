@@ -65,8 +65,12 @@ public class CanvasManager : MonoBehaviour
     //ゴールイベント
     public void GoalEvent()
     {
-        m_stickCanvas.SetActive(false);
         m_goalCanvas.SetActive(true);
+        //スティックのポジション初期化
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            m_stickCanvas.SetActive(false);
+        }
     }
 
     //ホームボタン
