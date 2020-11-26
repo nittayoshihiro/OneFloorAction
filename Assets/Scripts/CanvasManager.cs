@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class CanvasManager : MonoBehaviour
@@ -45,7 +43,7 @@ public class CanvasManager : MonoBehaviour
     {
         m_autoMapping.AutoMapping();
         m_titleCanvas.SetActive(false);
-        m_stickCanvas.SetActive(true);
+        Instantiate(m_stickCanvas);
     }
 
     //設定ボタン
@@ -66,11 +64,8 @@ public class CanvasManager : MonoBehaviour
     public void GoalEvent()
     {
         m_goalCanvas.SetActive(true);
-        //スティックのポジション初期化
-        if (Input.GetKeyUp(KeyCode.Mouse0))
-        {
-            m_stickCanvas.SetActive(false);
-        }
+        GameObject stickCanvas = GameObject.Find("StickCanvas(Clone)");
+        Destroy(stickCanvas);
     }
 
     //ホームボタン
