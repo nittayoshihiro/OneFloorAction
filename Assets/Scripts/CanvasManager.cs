@@ -8,6 +8,7 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] GameObject m_configurationCanvas;
     [SerializeField] GameObject m_moveSensitivitySlider;
     [SerializeField] GameObject m_stickCanvas;
+    [SerializeField] GameObject m_crossButtonCanvas;
     [SerializeField] GameObject m_goalCanvas;
     [SerializeField] AutoMappingV3 m_autoMapping;
     float m_sensitiveity;
@@ -43,7 +44,15 @@ public class CanvasManager : MonoBehaviour
     {
         m_autoMapping.AutoMapping();
         m_titleCanvas.SetActive(false);
-        Instantiate(m_stickCanvas);
+        if (false)
+        {
+            Instantiate(m_stickCanvas);
+        }
+        else if (true)
+        {
+            Instantiate(m_crossButtonCanvas);
+        }
+       
     }
 
     //設定ボタン
@@ -64,8 +73,17 @@ public class CanvasManager : MonoBehaviour
     public void GoalEvent()
     {
         m_goalCanvas.SetActive(true);
-        GameObject stickCanvas = GameObject.Find("StickCanvas(Clone)");
-        Destroy(stickCanvas);
+        if (false)
+        {
+            GameObject stickCanvas = GameObject.Find("StickCanvas(Clone)");
+            Destroy(stickCanvas);
+        }
+        else if (true)
+        {
+            GameObject crossButtonCanvas = GameObject.Find("CrossButtonCanvas(Clone)");
+            Destroy(crossButtonCanvas);
+        }
+        
     }
 
     //ホームボタン

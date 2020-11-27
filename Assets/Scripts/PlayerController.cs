@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     FloatingJoystick m_joystick;
     AutoMappingV3.TileStatus[,] m_mapStatus;
     CanvasManager m_canvasManager;
+    Vector3 pos;
 
     // Start is called before the first frame update
     void Start()
@@ -39,22 +40,25 @@ public class PlayerController : MonoBehaviour
     {
         m_X = true;
         m_Y = true;
-        Vector3 pos = this.gameObject.transform.position;
+        pos = this.gameObject.transform.position;
         // float y = Input.GetAxisRaw("Vertical");     // 水平方向の入力を取得する
         // float x = Input.GetAxisRaw("Horizontal");   // 垂直方向の入力を取得する
-
-        float y = m_joystick.Vertical;     // 水平方向の入力を取得する
-        float x = m_joystick.Horizontal;   // 垂直方向の入力を取得する
-
-        //傾きが大きい方に進む
-        if (Mathf.Abs(x) > Mathf.Abs(y))
+        if (false)
         {
-            DirectionGoX(pos, x, y);
+            float y = m_joystick.Vertical;     // 水平方向の入力を取得する
+            float x = m_joystick.Horizontal;   // 垂直方向の入力を取得する
+
+            //傾きが大きい方に進む
+            if (Mathf.Abs(x) > Mathf.Abs(y))
+            {
+                DirectionGoX(pos, x, y);
+            }
+            else
+            {
+                DirectionGoY(pos, x, y);
+            }
         }
-        else
-        {
-            DirectionGoY(pos, x, y);
-        }
+       
 
         //自分のポジションがゴールポジションだったら
         if (m_mapStatus[(int)pos.x, (int)pos.y] == AutoMappingV3.TileStatus.Goal)
@@ -65,8 +69,23 @@ public class PlayerController : MonoBehaviour
         }
 
     }
+
     /// <summary>
-    /// /dd
+    /// ボタン入力用
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    public void ButtonMove(float x, float y)
+    {
+        if (true)
+        {
+            DirectionGoX(pos, x, y);
+            DirectionGoY(pos, x, y);
+        }
+    }
+
+    /// <summary>
+    /// x軸方向の移動
     /// </summary>
     /// <param name="position"></param>
     /// <param name="x"></param>
@@ -113,6 +132,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// y軸方向の移動
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
     void DirectionGoY(Vector3 position, float x, float y)
     {
         m_Y = false;
