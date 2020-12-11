@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
         pos = this.gameObject.transform.position;
         // float y = Input.GetAxisRaw("Vertical");     // 水平方向の入力を取得する
         // float x = Input.GetAxisRaw("Horizontal");   // 垂直方向の入力を取得する
-        if (false)
+        if (true)
         {
             float y = m_joystick.Vertical;     // 水平方向の入力を取得する
             float x = m_joystick.Horizontal;   // 垂直方向の入力を取得する

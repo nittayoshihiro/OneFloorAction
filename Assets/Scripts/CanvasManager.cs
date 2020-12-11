@@ -44,11 +44,11 @@ public class CanvasManager : MonoBehaviour
     {
         m_autoMapping.AutoMapping();
         m_titleCanvas.SetActive(false);
-        if (false)
+        if (true)
         {
             Instantiate(m_stickCanvas);
         }
-        else if (true)
+        else if (false)
         {
             Instantiate(m_crossButtonCanvas);
         }
@@ -73,12 +73,12 @@ public class CanvasManager : MonoBehaviour
     public void GoalEvent()
     {
         m_goalCanvas.SetActive(true);
-        if (false)
+        if (true)
         {
             GameObject stickCanvas = GameObject.Find("StickCanvas(Clone)");
             Destroy(stickCanvas);
         }
-        else if (true)
+        else if (false)
         {
             GameObject crossButtonCanvas = GameObject.Find("CrossButtonCanvas(Clone)");
             Destroy(crossButtonCanvas);
