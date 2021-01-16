@@ -208,6 +208,16 @@ public class PlayerController : MonoBehaviour
         yield break;
     }
 
+    public Vector3 PlayPos
+    {
+        get { return transform.position; }
+    }
+
+    public float PlayerSpeed
+    {
+        get { return m_playerSpeed; }
+    }
+
     enum PlayerMoveStatus
     {
         /// <summary>上移動</summary>
