@@ -14,7 +14,9 @@ public class PlayerController : MonoBehaviour
     FloatingJoystick m_joystick;
     AutoMappingV3.TileStatus[,] m_mapStatus;
     CanvasManager m_canvasManager;
+    PlayerAnimation m_playerAnimation;
     Vector3 pos;
+    [SerializeField]Sprite[] m_sprites;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +30,7 @@ public class PlayerController : MonoBehaviour
         m_canvasManager = GameObject.FindObjectOfType<CanvasManager>();
         m_joystick = GameObject.FindObjectOfType<FloatingJoystick>();
         AutoMappingV3 m_autoMapping = GameObject.FindObjectOfType<AutoMappingV3>();
+        m_playerAnimation = GetComponent<PlayerAnimation>();
         if (m_autoMapping)
         {
             m_mapStatus = m_autoMapping.GetMappingData;
@@ -100,6 +103,7 @@ public class PlayerController : MonoBehaviour
             {
                 Vector3 willPos = new Vector3(position.x + 1f, position.y, position.z);
                 StartCor(willPos);
+                m_playerAnimation.ChangeAnimation(PlayerAnimation.AnimaState.Right);
             }
             //壁だった場合
             else if (m_mapStatus[(int)position.x + 1, (int)position.y] == AutoMappingV3.TileStatus.Wall)
@@ -118,6 +122,7 @@ public class PlayerController : MonoBehaviour
             {
                 Vector3 willPos = new Vector3(position.x - 1f, position.y, position.z);
                 StartCor(willPos);
+                m_playerAnimation.ChangeAnimation(PlayerAnimation.AnimaState.Left);
             }
             //壁だった場合
             else if (m_mapStatus[(int)position.x - 1, (int)position.y] == AutoMappingV3.TileStatus.Wall)
@@ -148,6 +153,7 @@ public class PlayerController : MonoBehaviour
             {
                 Vector3 willPos = new Vector3(position.x, position.y + 1f, position.z);
                 StartCor(willPos);
+                m_playerAnimation.ChangeAnimation(PlayerAnimation.AnimaState.Up);
             }
             //壁だった場合
             else if (m_mapStatus[(int)position.x, (int)position.y + 1] == AutoMappingV3.TileStatus.Wall)
@@ -166,6 +172,7 @@ public class PlayerController : MonoBehaviour
             {
                 Vector3 willPos = new Vector3(position.x, position.y - 1f, position.z);
                 StartCor(willPos);
+                m_playerAnimation.ChangeAnimation(PlayerAnimation.AnimaState.Down);
             }
             //壁だった場合
             else if (m_mapStatus[(int)position.x, (int)position.y - 1] == AutoMappingV3.TileStatus.Wall)
@@ -198,7 +205,7 @@ public class PlayerController : MonoBehaviour
             Vector3 nextPos = Vector3.Lerp(transform.position, goal, Time.deltaTime * m_playerSpeed);
             transform.position = nextPos;
             //ここまでが1フレームの間に処理される
-            yield return null;
+            yield return new WaitForSeconds(0.005f);
         }
         //ポジションを修正
         transform.position = goal;
