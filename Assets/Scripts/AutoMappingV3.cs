@@ -2,8 +2,10 @@
 using UnityEngine.Tilemaps;
 public class AutoMappingV3 : MonoBehaviour
 {
+    //マップサイズXY
     [SerializeField] int m_mapSizeX = 30;
     [SerializeField] int m_mapSizeY = 20;
+    //部屋サイズ
     [SerializeField] int m_minimumRoomSize = 4;
     [SerializeField] Tilemap m_tilemap;
     [SerializeField] Tile m_wallTile;
