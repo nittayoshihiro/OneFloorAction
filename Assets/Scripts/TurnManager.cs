@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class TurnManager : MonoBehaviour
 {
     PlayerController m_PlayerController;
+    EnemyController[] m_enemyController;
+    GameObject[] m_enemys;
     TurnStatus m_TurnStatus = TurnStatus.Standby;
     
     void Update()
@@ -13,9 +16,22 @@ public class TurnManager : MonoBehaviour
     }
 
     /// <summary>セットアップ関数</summary>
-    public void SetUp()
+    public void SetUpPlayer()
     {
-        m_PlayerController = FindObjectOfType <PlayerController> ();
+        m_PlayerController = FindObjectOfType<PlayerController>();
+    }
+
+    public void SetUpEnemy()
+    {
+        m_enemys = GameObject.FindGameObjectsWithTag("Enemy");
+        if (m_enemys != null)
+        {
+            Array.Resize(ref m_enemyController, m_enemys.Length);
+            for (int i = 0; i < m_enemyController.Length; i++)
+            {
+                m_enemyController[i] = m_enemys[i].GetComponent<EnemyController>();
+            }
+        }
     }
 
     /// <summary>ターンサイクル</summary>
@@ -35,11 +51,31 @@ public class TurnManager : MonoBehaviour
                 //プレイヤーが移動し終わったら
                 if (!m_PlayerController.MoveNow)
                 {
+                    if (m_enemys != null)
+                    {
+                        for (int i = 0; i < m_enemyController.Length; i++)
+                        {
+                            m_enemyController[i].EnemyMoveOn();
+                        }
+                    }
                     m_TurnStatus = TurnStatus.EnemyTurn;
                 }
                 break;
             case TurnStatus.EnemyTurn:
-                m_TurnStatus = TurnStatus.Standby;
+                Debug.Log(m_enemys[0]);
+                if (m_enemys == null)
+                {
+                    m_TurnStatus = TurnStatus.Standby;
+                }
+                else if (m_enemys != null)
+                {
+                    Debug.Log(m_enemyController[0]);
+                   if (!m_enemyController[0].Enemymove)
+                   {
+                    m_TurnStatus = TurnStatus.Standby;
+                   }
+                }
+                
                 break;
         }
        

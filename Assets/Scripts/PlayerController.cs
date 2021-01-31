@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
         }
         m_moveSensitivity = 0.1f * m_canvasManager.MoveSensitivity;
         TurnManager turnManager = GameObject.FindObjectOfType<TurnManager>();
-        turnManager.SetUp();
+        turnManager.SetUpPlayer();
     }
 
     void Update()
