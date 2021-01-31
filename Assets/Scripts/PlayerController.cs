@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     PlayerAnimation m_playerAnimation;
     Vector3 pos;
     [SerializeField]Sprite[] m_sprites;
+    bool m_move = false;
 
     // Start is called before the first frame update
     void Start()
@@ -36,32 +37,36 @@ public class PlayerController : MonoBehaviour
             m_mapStatus = m_autoMapping.GetMappingData;
         }
         m_moveSensitivity = 0.1f * m_canvasManager.MoveSensitivity;
+        TurnManager turnManager = GameObject.FindObjectOfType<TurnManager>();
+        turnManager.SetUp();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        m_X = true;
-        m_Y = true;
-        pos = this.gameObject.transform.position;
-        // float y = Input.GetAxisRaw("Vertical");     // 水平方向の入力を取得する
-        // float x = Input.GetAxisRaw("Horizontal");   // 垂直方向の入力を取得する
-        if (true)
+        if (m_move)
         {
-            float y = m_joystick.Vertical;     // 水平方向の入力を取得する
-            float x = m_joystick.Horizontal;   // 垂直方向の入力を取得する
+            m_X = true;
+            m_Y = true;
+            pos = this.gameObject.transform.position;
+            // float y = Input.GetAxisRaw("Vertical");     // 水平方向の入力を取得する
+            // float x = Input.GetAxisRaw("Horizontal");   // 垂直方向の入力を取得する
+            if (true)
+            {
+                float y = m_joystick.Vertical;     // 水平方向の入力を取得する
+                float x = m_joystick.Horizontal;   // 垂直方向の入力を取得する
 
-            //傾きが大きい方に進む
-            if (Mathf.Abs(x) > Mathf.Abs(y))
-            {
-                DirectionGoX(pos, x, y);
-            }
-            else
-            {
-                DirectionGoY(pos, x, y);
+                //傾きが大きい方に進む
+                if (Mathf.Abs(x) > Mathf.Abs(y))
+                {
+                    DirectionGoX(pos, x, y);
+                }
+                else
+                {
+                    DirectionGoY(pos, x, y);
+                }
             }
         }
-       
+        
 
         //自分のポジションがゴールポジションだったら
         if (m_mapStatus[(int)pos.x, (int)pos.y] == AutoMappingV3.TileStatus.Goal)
@@ -210,6 +215,7 @@ public class PlayerController : MonoBehaviour
         //ポジションを修正
         transform.position = goal;
         m_myCor = null;
+        m_move = false;
         print("終了");
         //処理が終わったら破棄する
         yield break;
@@ -236,4 +242,12 @@ public class PlayerController : MonoBehaviour
         /// <summary>右移動</summary>
         Right
     }
+
+    public void MoveOn()
+    {
+        m_move = true;
+    }
+
+   　/// <summary>動いているかどうか</summary>
+    public bool MoveNow => m_move;
 }
