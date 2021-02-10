@@ -96,6 +96,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44e276959785aca4fac1eddc5ce98576, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_attack: 4
+  m_hp: 3
   m_playerSpeed: 10
   m_moveSensitivity: 0
   m_sprites: []

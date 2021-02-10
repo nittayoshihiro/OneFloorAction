@@ -62,7 +62,6 @@ public class TurnManager : MonoBehaviour
                 }
                 break;
             case TurnStatus.EnemyTurn:
-                Debug.Log(m_enemys[0]);
                 if (m_enemys == null)
                 {
                     m_TurnStatus = TurnStatus.Standby;
@@ -70,16 +69,13 @@ public class TurnManager : MonoBehaviour
                 else if (m_enemys != null)
                 {
                     Debug.Log(m_enemyController[0]);
-                   if (!m_enemyController[0].Enemymove)
+                   if (!m_enemyController[0].Enemymove ||m_enemyController[0] == null)
                    {
                     m_TurnStatus = TurnStatus.Standby;
                    }
                 }
-                
                 break;
         }
-       
-        
     }
 
     enum TurnStatus

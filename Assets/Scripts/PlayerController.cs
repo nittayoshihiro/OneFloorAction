@@ -1,10 +1,14 @@
-﻿using Cinemachine;//Cinemachineを使うため
+﻿
+using Cinemachine;//Cinemachineを使うため
 using System.Collections;
 using UnityEngine;
-
+using System.Linq;
+using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] int m_attack;
+    [SerializeField] int m_hp;
     [SerializeField] float m_playerSpeed = 0.1f;
     //操作感度
     public float m_moveSensitivity;
@@ -15,8 +19,10 @@ public class PlayerController : MonoBehaviour
     AutoMappingV3.TileStatus[,] m_mapStatus;
     CanvasManager m_canvasManager;
     PlayerAnimation m_playerAnimation;
+    BaseState m_PlayerState;
     Vector3 pos;
-    [SerializeField]Sprite[] m_sprites;
+    List<GameObject> m_enemys = null;
+    [SerializeField] Sprite[] m_sprites;
     bool m_move = false;
 
     // Start is called before the first frame update
@@ -28,6 +34,7 @@ public class PlayerController : MonoBehaviour
         {
             m_vCam.Follow = transform;
         }
+        m_PlayerState = new BaseState(m_hp,m_attack);
         m_canvasManager = GameObject.FindObjectOfType<CanvasManager>();
         m_joystick = GameObject.FindObjectOfType<FloatingJoystick>();
         AutoMappingV3 m_autoMapping = GameObject.FindObjectOfType<AutoMappingV3>();
@@ -43,6 +50,10 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (m_PlayerState.GetHp < 0)
+        {
+            Destroy(this.gameObject);
+        }
         if (m_move)
         {
             m_X = true;
@@ -50,23 +61,21 @@ public class PlayerController : MonoBehaviour
             pos = this.gameObject.transform.position;
             // float y = Input.GetAxisRaw("Vertical");     // 水平方向の入力を取得する
             // float x = Input.GetAxisRaw("Horizontal");   // 垂直方向の入力を取得する
-            if (true)
-            {
-                float y = m_joystick.Vertical;     // 水平方向の入力を取得する
-                float x = m_joystick.Horizontal;   // 垂直方向の入力を取得する
 
-                //傾きが大きい方に進む
-                if (Mathf.Abs(x) > Mathf.Abs(y))
-                {
-                    DirectionGoX(pos, x, y);
-                }
-                else
-                {
-                    DirectionGoY(pos, x, y);
-                }
+            float y = m_joystick.Vertical;     // 水平方向の入力を取得する
+            float x = m_joystick.Horizontal;   // 垂直方向の入力を取得する
+
+            //傾きが大きい方に進む
+            if (Mathf.Abs(x) > Mathf.Abs(y))
+            {
+                DirectionGoX(pos, x, y);
+            }
+            else
+            {
+                DirectionGoY(pos, x, y);
             }
         }
-        
+
 
         //自分のポジションがゴールポジションだったら
         if (m_mapStatus[(int)pos.x, (int)pos.y] == AutoMappingV3.TileStatus.Goal)
@@ -241,6 +250,41 @@ public class PlayerController : MonoBehaviour
         Lift,
         /// <summary>右移動</summary>
         Right
+    }
+
+   　/// <summary>
+    /// プレイヤー攻撃
+    /// </summary>
+    public void PlayerAttack()
+    {
+        SearchGameObject();
+        List<EnemyController> enemyController = new List<EnemyController>();
+        m_enemys.ForEach(enemy => enemyController.Add(enemy.GetComponent("EnemyController")as EnemyController));
+        enemyController.ForEach(enemyCol => enemyCol.EnemyDamage(m_PlayerState.GetAttack));
+        m_move = false;
+    }
+
+    /// <summary>
+    /// 周囲のオブジェクトを検索します。
+    /// </summary>
+    private void SearchGameObject()
+    {
+        Debug.Log("検索");
+        m_enemys = GameObject.FindGameObjectsWithTag("Enemy").ToList();
+        for (int i = 0; i < m_enemys.Count;)
+        {
+            if (this.transform.position == new Vector3(m_enemys[i].transform.position.x + 1, m_enemys[i].transform.position.y, 0)
+                || this.transform.position == new Vector3(m_enemys[i].transform.position.x - 1, m_enemys[i].transform.position.y, 0)
+                || this.transform.position == new Vector3(m_enemys[i].transform.position.x, m_enemys[i].transform.position.y + 1, 0)
+                || this.transform.position == new Vector3(m_enemys[i].transform.position.x, m_enemys[i].transform.position.y - 1, 0))
+            {
+                i++;
+            }
+            else
+            {
+                m_enemys.RemoveRange(i,1);
+            }
+        }
     }
 
     public void MoveOn()
