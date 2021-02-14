@@ -11,6 +11,7 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] GameObject m_crossButtonCanvas;
     [SerializeField] GameObject m_goalCanvas;
     [SerializeField] AutoMappingV3 m_autoMapping;
+    [SerializeField] EnemyGeneration m_enemyGeneration;
     float m_sensitiveity;
     // Start is called before the first frame update
     void Start()
@@ -43,6 +44,7 @@ public class CanvasManager : MonoBehaviour
     public void PlayButton()
     {
         m_autoMapping.AutoMapping();
+        m_enemyGeneration.EnemyGenerator();
         m_titleCanvas.SetActive(false);
         if (true)
         {

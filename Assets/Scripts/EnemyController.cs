@@ -7,12 +7,14 @@ public class EnemyController : MonoBehaviour
 {
     [SerializeField] int m_attack;
     [SerializeField] int m_hp;
+    [SerializeField] int m_point;
     [SerializeField] GameObject m_sliderObj;
     Slider m_slider;
     TurnManager m_turnManager;
     AutoMappingV3.TileStatus[,] m_tileStatuses;
     Vector3 m_vector3;
     GameObject m_player;
+    ScoreManager m_scoreManager;
     //差の計算結果
     float x, y;
     bool m_move;
@@ -22,13 +24,13 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         m_enemyState = new BaseState(m_hp, m_attack);
-        AutoMappingV3 autoMappingV3 = GameObject.FindObjectOfType<AutoMappingV3>();
-        m_tileStatuses = autoMappingV3.GetMappingData;
+        m_tileStatuses = GameObject.FindObjectOfType<AutoMappingV3>().GetMappingData;
         m_turnManager = GameObject.FindObjectOfType<TurnManager>();
         m_turnManager.SetUpEnemy();
-        Debug.Log(m_turnManager);
         m_player = GameObject.Find("Player(Clone)");
+        m_scoreManager = GameManager.FindObjectOfType<ScoreManager>();
 
+        //スライダー処理
         m_slider = m_sliderObj.GetComponent<Slider>();
         m_slider.maxValue = m_hp;
         m_slider.value = m_hp;
@@ -43,7 +45,6 @@ public class EnemyController : MonoBehaviour
     {
         m_enemyState.DamageCalculation(attack);
         m_slider.value = m_enemyState.GetHp;
-        Debug.Log($"Slider{m_slider}");
         if (!m_sliderObj.activeSelf)
         {
             m_sliderObj.SetActive(true);
@@ -57,6 +58,7 @@ public class EnemyController : MonoBehaviour
         {
             m_move = false;
             m_turnManager.SetUpEnemy();
+            m_scoreManager.AddScore(m_point);
             Destroy(this.gameObject);
         }
         if (m_move)
@@ -69,7 +71,6 @@ public class EnemyController : MonoBehaviour
 
     public virtual void EnemyMove()
     {
-        Debug.Log("EnemyMove");
         //上下左右に移動でプレイヤーに近づくところを探す
         x = this.transform.position.x - m_player.transform.position.x;
         y = this.transform.position.y - m_player.transform.position.y;
@@ -103,12 +104,6 @@ public class EnemyController : MonoBehaviour
         }
 
     }
-
-    void DirectionInspection(AutoMappingV3.TileStatus tileStatus)
-    {
-
-    }
-
 
     //MoveToをスタートさせるメソッド
     //外部からコルーチンを呼び出すときはこのメソッドを使う
