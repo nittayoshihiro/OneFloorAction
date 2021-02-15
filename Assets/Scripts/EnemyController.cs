@@ -9,6 +9,8 @@ public class EnemyController : MonoBehaviour
     [SerializeField] int m_hp;
     [SerializeField] int m_point;
     [SerializeField] GameObject m_sliderObj;
+    [SerializeField] AudioClip m_destroyAudio;
+    AudioSource m_audioSource;
     Slider m_slider;
     TurnManager m_turnManager;
     AutoMappingV3.TileStatus[,] m_tileStatuses;
@@ -24,6 +26,7 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         m_enemyState = new BaseState(m_hp, m_attack);
+        m_audioSource = GetComponent<AudioSource>();
         m_tileStatuses = GameObject.FindObjectOfType<AutoMappingV3>().GetMappingData;
         m_turnManager = GameObject.FindObjectOfType<TurnManager>();
         m_turnManager.SetUpEnemy();
@@ -57,6 +60,8 @@ public class EnemyController : MonoBehaviour
         if (m_enemyState.GetHp < 0)
         {
             m_move = false;
+            m_audioSource.PlayOneShot(m_destroyAudio);
+            Debug.Log("Destroy");
             m_turnManager.SetUpEnemy();
             m_scoreManager.AddScore(m_point);
             Destroy(this.gameObject);

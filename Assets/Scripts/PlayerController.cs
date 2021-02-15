@@ -5,11 +5,15 @@ using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(AudioSource))]
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] int m_attack;
     [SerializeField] int m_hp;
     [SerializeField] float m_playerSpeed = 0.1f;
+    [SerializeField] AudioClip m_moveAudio;
+    [SerializeField] AudioClip m_attackAudio;
     //操作感度
     public float m_moveSensitivity;
     //移動判定
@@ -18,7 +22,8 @@ public class PlayerController : MonoBehaviour
     FloatingJoystick m_joystick;
     AutoMappingV3.TileStatus[,] m_mapStatus;
     CanvasManager m_canvasManager;
-    PlayerAnimation m_playerAnimation;
+    Animator m_anim;
+    AudioSource m_audioSource;
     BaseState m_PlayerState;
     Vector3 pos;
     List<GameObject> m_enemys = null;
@@ -28,17 +33,19 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameObject.FindObjectOfType<ScoreManager>().Initialize();
         //Virtual Camera がプレイヤーを見るように設定する
         CinemachineVirtualCamera m_vCam = GameObject.FindObjectOfType<CinemachineVirtualCamera>();
         if (m_vCam)
         {
             m_vCam.Follow = transform;
         }
+        m_anim = GetComponent<Animator>();
+        m_audioSource = GetComponent<AudioSource>();
         m_PlayerState = new BaseState(m_hp,m_attack);
         m_canvasManager = GameObject.FindObjectOfType<CanvasManager>();
         m_joystick = GameObject.FindObjectOfType<FloatingJoystick>();
         AutoMappingV3 m_autoMapping = GameObject.FindObjectOfType<AutoMappingV3>();
-        m_playerAnimation = GetComponent<PlayerAnimation>();
         if (m_autoMapping)
         {
             m_mapStatus = m_autoMapping.GetMappingData;
@@ -81,6 +88,15 @@ public class PlayerController : MonoBehaviour
         if (m_mapStatus[(int)pos.x, (int)pos.y] == AutoMappingV3.TileStatus.Goal)
         {
             Debug.Log("ゴール");
+            GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
+            if(enemys != null)
+            {
+                foreach (var item in enemys)
+                {
+                    Destroy(item);
+                }
+            }
+            
             m_canvasManager.GoalEvent();
             Destroy(this.gameObject);
         }
@@ -117,7 +133,7 @@ public class PlayerController : MonoBehaviour
             {
                 Vector3 willPos = new Vector3(position.x + 1f, position.y, position.z);
                 StartCor(willPos);
-                m_playerAnimation.ChangeAnimation(PlayerAnimation.AnimaState.Right);
+                m_anim.Play("PlayerLeft");
             }
             //壁だった場合
             else if (m_mapStatus[(int)position.x + 1, (int)position.y] == AutoMappingV3.TileStatus.Wall)
@@ -136,7 +152,7 @@ public class PlayerController : MonoBehaviour
             {
                 Vector3 willPos = new Vector3(position.x - 1f, position.y, position.z);
                 StartCor(willPos);
-                m_playerAnimation.ChangeAnimation(PlayerAnimation.AnimaState.Left);
+                m_anim.Play("PlayerLeft");
             }
             //壁だった場合
             else if (m_mapStatus[(int)position.x - 1, (int)position.y] == AutoMappingV3.TileStatus.Wall)
@@ -167,7 +183,7 @@ public class PlayerController : MonoBehaviour
             {
                 Vector3 willPos = new Vector3(position.x, position.y + 1f, position.z);
                 StartCor(willPos);
-                m_playerAnimation.ChangeAnimation(PlayerAnimation.AnimaState.Up);
+                m_anim.Play("PlayerUp");
             }
             //壁だった場合
             else if (m_mapStatus[(int)position.x, (int)position.y + 1] == AutoMappingV3.TileStatus.Wall)
@@ -186,7 +202,7 @@ public class PlayerController : MonoBehaviour
             {
                 Vector3 willPos = new Vector3(position.x, position.y - 1f, position.z);
                 StartCor(willPos);
-                m_playerAnimation.ChangeAnimation(PlayerAnimation.AnimaState.Down);
+                m_anim.Play("PlayerDown");
             }
             //壁だった場合
             else if (m_mapStatus[(int)position.x, (int)position.y - 1] == AutoMappingV3.TileStatus.Wall)
@@ -214,6 +230,7 @@ public class PlayerController : MonoBehaviour
     //goalの位置までスムーズに移動する
     IEnumerator MoveTo(Vector3 goal)
     {
+        m_audioSource.PlayOneShot(m_moveAudio);
         while (Vector3.Distance(transform.position, goal) > 0.1f)
         {
             Vector3 nextPos = Vector3.Lerp(transform.position, goal, Time.deltaTime * m_playerSpeed);
@@ -257,6 +274,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void PlayerAttack()
     {
+        m_audioSource.PlayOneShot(m_attackAudio);
         SearchGameObject();
         List<EnemyController> enemyController = new List<EnemyController>();
         m_enemys.ForEach(enemy => enemyController.Add(enemy.GetComponent("EnemyController")as EnemyController));
