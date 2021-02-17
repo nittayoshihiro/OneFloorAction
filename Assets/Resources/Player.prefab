@@ -97,10 +97,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_attack: 4
-  m_hp: 3
+  m_hp: 4
   m_playerSpeed: 10
   m_moveAudio: {fileID: 8300000, guid: c939b341fd78741b7b2df85d05f4e0bf, type: 3}
   m_attackAudio: {fileID: 8300000, guid: df2d63124c2ac418eb83dd32903cd4b6, type: 3}
+  m_die: {fileID: 8300000, guid: b7039cc0eb21641479d4378c4e2a17d3, type: 3}
   m_moveSensitivity: 0
   m_sprites: []
 --- !u!95 &801875344847468666

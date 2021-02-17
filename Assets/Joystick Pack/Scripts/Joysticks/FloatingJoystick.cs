@@ -24,8 +24,8 @@ public class FloatingJoystick : Joystick
 
     public override void OnPointerUp(PointerEventData eventData)
     {
-        //input = Vector2.zero;
-        //handle.anchoredPosition = Vector2.zero;
+        input = Vector2.zero;
+        handle.anchoredPosition = Vector2.zero;
         m_upEventData = eventData;
         Invoke("JoistickFalse", 0.5f);
     }

@@ -9,14 +9,15 @@ public class EnemyController : MonoBehaviour
     [SerializeField] int m_hp;
     [SerializeField] int m_point;
     [SerializeField] GameObject m_sliderObj;
+    [SerializeField] GameObject m_enemyDie;
     [SerializeField] AudioClip m_destroyAudio;
-    AudioSource m_audioSource;
     Slider m_slider;
     TurnManager m_turnManager;
     AutoMappingV3.TileStatus[,] m_tileStatuses;
     Vector3 m_vector3;
     GameObject m_player;
     ScoreManager m_scoreManager;
+    PlayerController m_playerController;
     //差の計算結果
     float x, y;
     bool m_move;
@@ -26,13 +27,12 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         m_enemyState = new BaseState(m_hp, m_attack);
-        m_audioSource = GetComponent<AudioSource>();
         m_tileStatuses = GameObject.FindObjectOfType<AutoMappingV3>().GetMappingData;
         m_turnManager = GameObject.FindObjectOfType<TurnManager>();
         m_turnManager.SetUpEnemy();
         m_player = GameObject.Find("Player(Clone)");
+        m_playerController = m_player.GetComponent<PlayerController>();
         m_scoreManager = GameManager.FindObjectOfType<ScoreManager>();
-
         //スライダー処理
         m_slider = m_sliderObj.GetComponent<Slider>();
         m_slider.maxValue = m_hp;
@@ -40,17 +40,25 @@ public class EnemyController : MonoBehaviour
         m_sliderObj.SetActive(false);
     }
 
+
     /// <summary>
     /// 敵ダメージ表示ようダメージ計算
     /// </summary>
     /// <param name="attack"></param>
     public void EnemyDamage(int attack)
     {
+        m_scoreManager.AddScore(m_point);
         m_enemyState.DamageCalculation(attack);
         m_slider.value = m_enemyState.GetHp;
         if (!m_sliderObj.activeSelf)
         {
             m_sliderObj.SetActive(true);
+        }
+        //ダメージを受けてたら反撃
+        else if (m_sliderObj.activeSelf && m_enemyState.GetHp > 0)
+        {
+            m_playerController.PlayerDamage(m_enemyState.GetAttack);
+            //サウンドをつけたい
         }
 
     }
@@ -60,10 +68,11 @@ public class EnemyController : MonoBehaviour
         if (m_enemyState.GetHp < 0)
         {
             m_move = false;
-            m_audioSource.PlayOneShot(m_destroyAudio);
+            AudioSource.PlayClipAtPoint(m_destroyAudio,this.transform.position);
             Debug.Log("Destroy");
             m_turnManager.SetUpEnemy();
             m_scoreManager.AddScore(m_point);
+            //Instantiate(m_enemyDie,this.transform.position,Quaternion.identity);
             Destroy(this.gameObject);
         }
         if (m_move)
@@ -118,7 +127,6 @@ public class EnemyController : MonoBehaviour
         {
             m_Cor = StartCoroutine(MoveTo(goal));
         }
-
     }
 
     //goalの位置までスムーズに移動する

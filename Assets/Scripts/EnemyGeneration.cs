@@ -16,7 +16,7 @@ public class EnemyGeneration : MonoBehaviour
         {
             for (int y = 1; y < m_mapStatus.GetLength(1)-1; y++)
             {
-                if (m_mapStatus[x, y] == AutoMappingV3.TileStatus.Road && Random.Range(1,100) < 5)
+                if (m_mapStatus[x, y] == AutoMappingV3.TileStatus.Road && Random.Range(1,100) < 3)
                 {
                     Instantiate(m_enemyObjects[m_enemyObjects.Length-1],new Vector3 ((float)x+0.5f,(float)y+0.5f,0),Quaternion.identity);
                 }

@@ -295,8 +295,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_attack: 1
   m_hp: 10
-  m_point: 300
+  m_point: 100
   m_sliderObj: {fileID: 5168433987812624594}
+  m_enemyDie: {fileID: 7777819368679899523, guid: 241925b029b4d4d17836b7db9870bb7f,
+    type: 3}
   m_destroyAudio: {fileID: 8300000, guid: 26e4996d0f72642be9440392c24547ab, type: 3}
 --- !u!212 &4660719764980297262
 SpriteRenderer:

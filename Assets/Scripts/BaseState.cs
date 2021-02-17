@@ -37,7 +37,7 @@ public class BaseState : MonoBehaviour
     /// <param name="attack">攻撃力</param>
     public void DamageCalculation(int attack)
     {
-        m_hp = m_hp - attack;
+        m_hp -= attack;
     }
 
     /// <summary>
@@ -46,6 +46,6 @@ public class BaseState : MonoBehaviour
     /// <param name="recoveryPoint">回復量</param>
     public void Recovery(int recoveryPoint)
     {
-        m_hp = m_hp + recoveryPoint;
+        m_hp += recoveryPoint;
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using System;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -14,10 +15,34 @@ public class ScoreManager : MonoBehaviour
     private int m_tutalScore = 0;
     private string m_messege;
     private int m_bestScore = 0;
+    private int m_playerlife;
+    private string m_lifeIcon = "@@@";
 
     private void Start()
     {
         m_bestScore = LoadJson();
+        Debug.Log(GetFilePath());
+    }
+
+    /// <summary>
+    /// ライフをアイコン化する
+    /// </summary>
+    /// <param name="playerlife"></param>
+    /// <returns></returns>
+    private string LifeIcon(int playerlife)
+    {
+        m_lifeIcon = "";
+        for (int i = 0; i < playerlife; i++)
+        {
+            m_lifeIcon += "@";
+        }
+        return m_lifeIcon;
+    }
+
+    public void PlayerLife(int playerlife)
+    {
+        m_playerlife = playerlife;
+        m_scoreText.text = string.Format("Score:{0:0000}\nlife:{1}", m_score, LifeIcon(m_playerlife));
     }
 
     /// <summary>
@@ -26,7 +51,7 @@ public class ScoreManager : MonoBehaviour
     public void Initialize()
     {
         m_score = 0;
-        m_scoreText.text = string.Format("Score:{0:0000}", m_score);
+        m_scoreText.text = string.Format("Score:{0:0000}\nlife:{1}", m_score, LifeIcon(m_playerlife));
         m_movepoint = 0;
     }
 
@@ -37,7 +62,7 @@ public class ScoreManager : MonoBehaviour
     public void AddScore(int point)
     {
         m_score += point;
-        m_scoreText.text = string.Format("Score:{0:0000}", m_score);
+        m_scoreText.text = string.Format("Score:{0:0000}\nlife:{1}", m_score, LifeIcon(m_playerlife));
     }
 
     /// <summary>
@@ -46,7 +71,11 @@ public class ScoreManager : MonoBehaviour
     /// <param name="movecount">移動回数</param>
     public void MovePoint(int movecount)
     {
-        m_movepoint += movecount;
+        m_movepoint = 5000 - (100 * movecount);
+        if (m_movepoint < 0)
+        {
+            m_movepoint = 0;
+        }
     }
 
     /// <summary>
@@ -75,9 +104,10 @@ public class ScoreManager : MonoBehaviour
     /// <param name="bestScore"></param>
     private void SaveJson(int bestScore)
     {
+        BestScore best = new BestScore(bestScore);
         //jsonシリアライズ
-        string json = JsonUtility.ToJson(bestScore);
-        using (var writer = new StreamWriter(GetFilePath(), false))
+        string json = JsonUtility.ToJson(best);
+        using (var writer = new StreamWriter(GetFilePath()))//eroor
         {
             writer.Write(json);
         }
@@ -92,16 +122,29 @@ public class ScoreManager : MonoBehaviour
         int saveDate = 0;
         try
         {
-            using (var reader = new StreamReader(GetFilePath(), false))
+            using (var reader = new StreamReader(GetFilePath()))
             {
                 //jsonでシリアライズ
-                saveDate = JsonUtility.FromJson<int>(reader.ToString());
+                BestScore best = JsonUtility.FromJson<BestScore>(reader.ReadToEnd());
+                saveDate = best.bestScore;
             }
         }
         catch (FileNotFoundException ex)
         {
             Debug.Log($"{ex}がなかったのでテキストを作成します");
-            File.Create(GetFilePath());
+            /*File.Create(GetFilePath());
+            while (true)
+            {
+                if (File.Exists(GetFilePath()))
+                {
+                    break;
+                }
+            }*/
+            SaveJson(m_tutalScore);
+        }
+        catch (ArgumentException ex)
+        {
+            Debug.Log(ex);
         }
         return saveDate;
     }
@@ -115,5 +158,15 @@ public class ScoreManager : MonoBehaviour
         // Unity の場合はどこでもファイルの読み書きができるわけではないことに注意。Application.persistentDataPath を使って「読み書きできるところ」でファイル操作をすること。
         string filePath = Application.persistentDataPath + "\\" + (m_fileName == "" ? Application.productName : m_fileName) + ".json";
         return filePath;
+    }
+}
+
+[Serializable]
+public class BestScore
+{
+    public int bestScore;
+    public BestScore(int bestScore)
+    {
+        this.bestScore = bestScore;
     }
 }
