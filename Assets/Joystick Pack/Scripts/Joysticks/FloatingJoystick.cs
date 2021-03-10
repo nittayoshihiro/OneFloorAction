@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class FloatingJoystick : Joystick
 {
-    PointerEventData m_upEventData;
+    //PointerEventData m_upEventData;
     protected override void Start()
     {
         base.Start();
@@ -26,7 +26,7 @@ public class FloatingJoystick : Joystick
     {
         input = Vector2.zero;
         handle.anchoredPosition = Vector2.zero;
-        m_upEventData = eventData;
+        //m_upEventData = eventData;
         Invoke("JoistickFalse", 0.5f);
     }
 
@@ -34,6 +34,6 @@ public class FloatingJoystick : Joystick
     {
         Debug.Log("JoistickFalse");
         background.gameObject.SetActive(false);
-        base.OnPointerUp(m_upEventData);
+        //base.OnPointerUp(m_upEventData);
     }
 }
