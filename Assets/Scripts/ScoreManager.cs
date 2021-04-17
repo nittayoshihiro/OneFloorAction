@@ -5,17 +5,30 @@ using UnityEngine.UI;
 using System.IO;
 using System;
 
+/// <summary>
+/// スコア管理クラス
+/// </summary>
 public class ScoreManager : MonoBehaviour
 {
+    /// <summary>スコアテキスト</summary>
     [SerializeField] Text m_scoreText;
+    /// <summary>結果テキスト</summary>
     [SerializeField] Text m_resultText;
+    /// <summary>表時テキスト</summary>
     string m_fileName = "bestscore";//今後のため変数宣言
+    /// <summary>現在のスコア</summary>
     private int m_score = 0;
+    /// <summary>移動のポイント</summary>
     private int m_movepoint = 0;
+    /// <summary>合計スコア</summary>
     private int m_tutalScore = 0;
+    /// <summary>表示文字</summary>
     private string m_messege;
+    /// <summary>1番のスコア</summary>
     private int m_bestScore = 0;
+    /// <summary>プレイヤーのライフ</summary>
     private int m_playerlife;
+    /// <summary>プレイヤーのライフアイコン</summary>
     private string m_lifeIcon = "@@@";
 
     private void Start()
@@ -39,6 +52,10 @@ public class ScoreManager : MonoBehaviour
         return m_lifeIcon;
     }
 
+    /// <summary>
+    /// プレイヤーのライフを更新します
+    /// </summary>
+    /// <param name="playerlife">プレイヤーのライフを渡す</param>
     public void PlayerLife(int playerlife)
     {
         m_playerlife = playerlife;

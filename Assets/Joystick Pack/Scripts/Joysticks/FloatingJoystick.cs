@@ -3,9 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// 浮いてるスティック
+/// </summary>
 public class FloatingJoystick : Joystick
 {
-    PointerEventData m_upEventData;
+    /// <summary>クリック</summary>
+    bool m_click = true;
+
+    //PointerEventData m_upEventData;
     protected override void Start()
     {
         base.Start();
@@ -14,7 +20,7 @@ public class FloatingJoystick : Joystick
 
     public override void OnPointerDown(PointerEventData eventData)
     {
-        if (!background.gameObject.activeSelf)
+        if (!background.gameObject.activeSelf && m_click)
         {
             background.anchoredPosition = ScreenPointToAnchoredPosition(eventData.position);
             background.gameObject.SetActive(true);
@@ -26,7 +32,7 @@ public class FloatingJoystick : Joystick
     {
         input = Vector2.zero;
         handle.anchoredPosition = Vector2.zero;
-        m_upEventData = eventData;
+        //m_upEventData = eventData;
         Invoke("JoistickFalse", 0.5f);
     }
 
@@ -34,6 +40,15 @@ public class FloatingJoystick : Joystick
     {
         Debug.Log("JoistickFalse");
         background.gameObject.SetActive(false);
-        base.OnPointerUp(m_upEventData);
+        m_click = true;
+        //base.OnPointerUp(m_upEventData);
     }
+
+    /// <summary>クリック攻撃の際</summary>
+    public void ButtonClick()
+    {
+        Debug.Log("ButtonClick");
+        m_click = false;
+    }
+
 }

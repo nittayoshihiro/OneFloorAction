@@ -1,23 +1,39 @@
 ﻿using UnityEngine;
 using UnityEngine.Tilemaps;
+
+/// <summary>
+///マッピングクラス
+/// </summary>
 public class AutoMappingV3 : MonoBehaviour
 {
     //マップサイズXY
+    /// <summary>マップサイズX</summary>
     [SerializeField] int m_mapSizeX = 30;
+    /// <summary>マップサイズY</summary>
     [SerializeField] int m_mapSizeY = 20;
     //部屋サイズ
+    /// <summary>部屋最低サイズ</summary>
     [SerializeField] int m_minimumRoomSize = 4;
+    /// <summary>タイルマップ</summary>
     [SerializeField] Tilemap m_tilemap;
+    /// <summary>壁のタイル</summary>
     [SerializeField] Tile m_wallTile;
+    /// <summary>道のタイル</summary>
     [SerializeField] Tile m_roadTile;
+    /// <summary>プレイヤーのタイル（スタート）</summary>
     [SerializeField] Tile m_playerTile;
+    /// <summary>ゴールのタイル</summary>
     [SerializeField] Tile m_goalTile;
+    /// <summary>プレイヤーゲームプレハブ</summary>
     [SerializeField] GameObject m_playerPrefab;
+    /// <summary></summary>
     Vector3Int m_vector3Int = new Vector3Int(0, 0, 0);
+    /// <summary></summary>
     TileStatus[,] m_mapStatus;
     /// <summary>ゴールポジション</summary>
     Vector3 m_goalPosition;
 
+    /// <summary></summary>
     public void AutoMapping()
     {
         Debug.Log("Mapping");
@@ -42,8 +58,8 @@ public class AutoMappingV3 : MonoBehaviour
                 m_mapStatus[i, j] = TileStatus.Wall;
             }
         }
-        //部屋に壁の厚さ２を入れる
-        int randomRoadX = Random.Range(minimumRoomSize + 4, mapSizeX - (minimumRoomSize + 5));
+        //区域分割法に乗っ取って部屋を3つに分解する。部屋は道によって分割される。以降で道をどこに引くか計算する
+        int randomRoadX = Random.Range(minimumRoomSize + 4, mapSizeX - (minimumRoomSize + 5));//randomRoadXは垂直方向に区切る道のx座標
         int randomRoadY = Random.Range(minimumRoomSize + 4, mapSizeY - (minimumRoomSize + 5));
         int randomRoomRoadX = Random.Range(2, mapSizeY - 3);
         int randomRoomRoadY = Random.Range(randomRoadX + 3, mapSizeX - 3);
@@ -166,6 +182,7 @@ public class AutoMappingV3 : MonoBehaviour
                 }
             }
         }
+
         //X軸の道を消す
         for (int i = 0; i < mapSizeX - 1; i++)
         {
@@ -189,6 +206,7 @@ public class AutoMappingV3 : MonoBehaviour
                 }
             }
         }
+
         //Y軸の道を消す
         for (int j = 0; j < mapSizeY - 1; j++)
         {
@@ -236,11 +254,11 @@ public class AutoMappingV3 : MonoBehaviour
                         break;
                     case TileStatus.Player:
                         m_tilemap.SetTile(m_vector3Int, m_playerTile);
-                        Instantiate(m_playerPrefab,new Vector3(m_vector3Int.x+0.5f,m_vector3Int.y+0.5f,m_vector3Int.z), Quaternion.identity);
+                        Instantiate(m_playerPrefab, new Vector3(m_vector3Int.x + 0.5f, m_vector3Int.y + 0.5f, m_vector3Int.z), Quaternion.identity);
                         break;
                     case TileStatus.Goal:
                         m_tilemap.SetTile(m_vector3Int, m_goalTile);
-                        m_goalPosition = new Vector3(m_vector3Int.x+0.5f,m_vector3Int.y+0.5f,0);
+                        m_goalPosition = new Vector3(m_vector3Int.x + 0.5f, m_vector3Int.y + 0.5f, 0);
                         break;
                 }
 
