@@ -1,20 +1,29 @@
-﻿
-using Cinemachine;//Cinemachineを使うため
+﻿using Cinemachine;//Cinemachineを使うため
 using System.Collections;
 using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 
+/// <summary>
+/// プレイヤー制御クラス
+/// </summary>
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(AudioSource))]
 public class PlayerController : MonoBehaviour
 {
+    /// <summary>攻撃力</summary>
     [SerializeField] int m_attack;
+    /// <summary>体力値</summary>
     [SerializeField] int m_hp;
+    /// <summary>プレイヤー移動速度</summary>
     [SerializeField] float m_playerSpeed = 0.1f;
+    /// <summary>移動音</summary>
     [SerializeField] AudioClip m_moveAudio;
+    /// <summary>攻撃音</summary>
     [SerializeField] AudioClip m_attackAudio;
+    /// <summary>死亡音</summary>
     [SerializeField] AudioClip m_die;
+
     //操作感度
     public float m_moveSensitivity;
     //移動判定
@@ -64,10 +73,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        //hpが０になった時
         if (m_PlayerState.GetHp <= 0)
         {
             EnemyClear();
-            AudioSource.PlayClipAtPoint(m_die,this.transform.position);
+            AudioSource.PlayClipAtPoint(m_die, this.transform.position);
             m_canvasManager.GoalEvent();
             Destroy(this.gameObject);
         }
@@ -106,6 +116,9 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 敵を消す
+    /// </summary>
     private void EnemyClear()
     {
         GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
@@ -168,7 +181,7 @@ public class PlayerController : MonoBehaviour
             {
                 Vector3 willPos = new Vector3(position.x - 1f, position.y, position.z);
                 StartCor(willPos);
-                this.transform.localScale = new Vector3(8,8,1);
+                this.transform.localScale = new Vector3(8, 8, 1);
                 m_anim.Play("PlayerLeft");
             }
             //壁だった場合
@@ -237,9 +250,9 @@ public class PlayerController : MonoBehaviour
     //外部からコルーチンを呼び出すときはこのメソッドを使う
     void StartCor(Vector3 goal)
     {
-        if (EnemyPosCheck(goal))
+        if (m_myCor == null)
         {
-            if (m_myCor == null)
+            if (EnemyPosCheck(goal))
             {
                 m_moveCount++;
                 m_myCor = StartCoroutine(MoveTo(goal));
@@ -253,7 +266,7 @@ public class PlayerController : MonoBehaviour
     /// <returns></returns>
     private bool EnemyPosCheck(Vector3 goal)
     {
-        Debug.Log(m_enemys.Count);
+        Debug.Log("Enemy" + m_enemys.Count);
         m_enemys = GameObject.FindGameObjectsWithTag("Enemy").ToList();
         if (m_enemys.Count != 0)
         {
@@ -261,12 +274,12 @@ public class PlayerController : MonoBehaviour
             {
                 if (item != null)
                 {
-                    if (item.transform.position == goal)
+                    if (item.transform.position == goal)//ここの処理で問題が起きている
                     {
                         return false;
                     }
                 }
-                
+
             }
         }
 
@@ -288,16 +301,22 @@ public class PlayerController : MonoBehaviour
         transform.position = goal;
         m_myCor = null;
         m_move = false;
-        print("終了");
+        //print("終了");
         //処理が終わったら破棄する
         yield break;
     }
 
+    /// <summary>
+    /// プレイヤーの位置を返します
+    /// </summary>
     public Vector3 PlayPos
     {
         get { return transform.position; }
     }
 
+    /// <summary>
+    /// プレイヤーの速度を返します
+    /// </summary>
     public float PlayerSpeed
     {
         get { return m_playerSpeed; }
@@ -343,15 +362,14 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private List<GameObject> SearchGameObject()
     {
-        Debug.Log("検索");
-        m_enemys = GameObject.FindGameObjectsWithTag("Enemy").ToList();
-        List<GameObject> nextToEnemy = m_enemys;
+        //Debug.Log("検索");
+        List<GameObject> nextToEnemy = GameObject.FindGameObjectsWithTag("Enemy").ToList();
         for (int i = 0; i < nextToEnemy.Count;)
         {
-            if (this.transform.position == new Vector3(m_enemys[i].transform.position.x + 1, m_enemys[i].transform.position.y, 0)
-                || this.transform.position == new Vector3(m_enemys[i].transform.position.x - 1, m_enemys[i].transform.position.y, 0)
-                || this.transform.position == new Vector3(m_enemys[i].transform.position.x, m_enemys[i].transform.position.y + 1, 0)
-                || this.transform.position == new Vector3(m_enemys[i].transform.position.x, m_enemys[i].transform.position.y - 1, 0))
+            if (this.transform.position == new Vector3(nextToEnemy[i].transform.position.x + 1, nextToEnemy[i].transform.position.y, 0)
+                || this.transform.position == new Vector3(nextToEnemy[i].transform.position.x - 1, nextToEnemy[i].transform.position.y, 0)
+                || this.transform.position == new Vector3(nextToEnemy[i].transform.position.x, nextToEnemy[i].transform.position.y + 1, 0)
+                || this.transform.position == new Vector3(nextToEnemy[i].transform.position.x, nextToEnemy[i].transform.position.y - 1, 0))
             {
                 i++;
             }
@@ -363,6 +381,9 @@ public class PlayerController : MonoBehaviour
         return nextToEnemy;
     }
 
+    /// <summary>
+    /// 行動をできるようにする
+    /// </summary>
     public void MoveOn()
     {
         m_move = true;
